@@ -6,12 +6,20 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
 
 @main
 struct HeadwayAudioPlayerApp: App {
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            AudioPlayerView(store: Store(
+                initialState: AudioPlayerFeature.State(),
+                reducer: {
+                    AudioPlayerFeature()
+                }
+            ))
         }
     }
+
 }

@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5517E30B2C8A3EE2008F2599 /* AudioPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5517E30A2C8A3EE2008F2599 /* AudioPlayerService.swift */; };
+		5517E30E2C8A4D8E008F2599 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 5517E30D2C8A4D8E008F2599 /* ComposableArchitecture */; };
+		5517E3102C8A4EAD008F2599 /* AudioPlayerFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5517E30F2C8A4EAD008F2599 /* AudioPlayerFeature.swift */; };
+		5517E3132C8A52BB008F2599 /* PlayerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5517E3122C8A52BB008F2599 /* PlayerState.swift */; };
+		5517E3152C8A52CA008F2599 /* PlayerProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5517E3142C8A52CA008F2599 /* PlayerProgress.swift */; };
+		5517E3172C8A615B008F2599 /* Summary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5517E3162C8A615B008F2599 /* Summary.swift */; };
 		557D25A52C89113D006367EF /* BottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557D25A42C89113D006367EF /* BottomSheetView.swift */; };
 		557D25A72C89ADC1006367EF /* PlayerButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557D25A62C89ADC1006367EF /* PlayerButtonStyle.swift */; };
 		557D25A92C89BD83006367EF /* SpeedControlButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557D25A82C89BD83006367EF /* SpeedControlButtonStyle.swift */; };
@@ -14,12 +20,17 @@
 		557D25AF2C89CEF3006367EF /* RoundedCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557D25AE2C89CEF3006367EF /* RoundedCorner.swift */; };
 		557D25B22C89CF82006367EF /* SpeedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557D25B12C89CF82006367EF /* SpeedButton.swift */; };
 		55C7C40F2C88D51200A78DFF /* HeadwayAudioPlayerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C7C40E2C88D51200A78DFF /* HeadwayAudioPlayerApp.swift */; };
-		55C7C4112C88D51200A78DFF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C7C4102C88D51200A78DFF /* ContentView.swift */; };
+		55C7C4112C88D51200A78DFF /* AudioPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C7C4102C88D51200A78DFF /* AudioPlayerView.swift */; };
 		55C7C4132C88D51400A78DFF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55C7C4122C88D51400A78DFF /* Assets.xcassets */; };
 		55C7C4162C88D51400A78DFF /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55C7C4152C88D51400A78DFF /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5517E30A2C8A3EE2008F2599 /* AudioPlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerService.swift; sourceTree = "<group>"; };
+		5517E30F2C8A4EAD008F2599 /* AudioPlayerFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerFeature.swift; sourceTree = "<group>"; };
+		5517E3122C8A52BB008F2599 /* PlayerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerState.swift; sourceTree = "<group>"; };
+		5517E3142C8A52CA008F2599 /* PlayerProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerProgress.swift; sourceTree = "<group>"; };
+		5517E3162C8A615B008F2599 /* Summary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Summary.swift; sourceTree = "<group>"; };
 		557D25A42C89113D006367EF /* BottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetView.swift; sourceTree = "<group>"; };
 		557D25A62C89ADC1006367EF /* PlayerButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerButtonStyle.swift; sourceTree = "<group>"; };
 		557D25A82C89BD83006367EF /* SpeedControlButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedControlButtonStyle.swift; sourceTree = "<group>"; };
@@ -28,7 +39,7 @@
 		557D25B12C89CF82006367EF /* SpeedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedButton.swift; sourceTree = "<group>"; };
 		55C7C40B2C88D51200A78DFF /* HeadwayAudioPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HeadwayAudioPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55C7C40E2C88D51200A78DFF /* HeadwayAudioPlayerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadwayAudioPlayerApp.swift; sourceTree = "<group>"; };
-		55C7C4102C88D51200A78DFF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		55C7C4102C88D51200A78DFF /* AudioPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerView.swift; sourceTree = "<group>"; };
 		55C7C4122C88D51400A78DFF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		55C7C4152C88D51400A78DFF /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -38,12 +49,23 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5517E30E2C8A4D8E008F2599 /* ComposableArchitecture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5517E3112C8A52B1008F2599 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				5517E3122C8A52BB008F2599 /* PlayerState.swift */,
+				5517E3142C8A52CA008F2599 /* PlayerProgress.swift */,
+				5517E3162C8A615B008F2599 /* Summary.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		557D25AA2C89BD91006367EF /* ButtonStyles */ = {
 			isa = PBXGroup;
 			children = (
@@ -91,7 +113,10 @@
 			isa = PBXGroup;
 			children = (
 				55C7C40E2C88D51200A78DFF /* HeadwayAudioPlayerApp.swift */,
-				55C7C4102C88D51200A78DFF /* ContentView.swift */,
+				55C7C4102C88D51200A78DFF /* AudioPlayerView.swift */,
+				5517E30F2C8A4EAD008F2599 /* AudioPlayerFeature.swift */,
+				5517E30A2C8A3EE2008F2599 /* AudioPlayerService.swift */,
+				5517E3112C8A52B1008F2599 /* Models */,
 				557D25B02C89CF63006367EF /* BottomSheet */,
 				557D25AD2C89CEE9006367EF /* Shape */,
 				557D25AA2C89BD91006367EF /* ButtonStyles */,
@@ -125,6 +150,9 @@
 			dependencies = (
 			);
 			name = HeadwayAudioPlayer;
+			packageProductDependencies = (
+				5517E30D2C8A4D8E008F2599 /* ComposableArchitecture */,
+			);
 			productName = HeadwayAudioPlayer;
 			productReference = 55C7C40B2C88D51200A78DFF /* HeadwayAudioPlayer.app */;
 			productType = "com.apple.product-type.application";
@@ -153,6 +181,9 @@
 				Base,
 			);
 			mainGroup = 55C7C4022C88D51200A78DFF;
+			packageReferences = (
+				5517E30C2C8A4D8E008F2599 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
+			);
 			productRefGroup = 55C7C40C2C88D51200A78DFF /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -181,11 +212,16 @@
 			files = (
 				557D25A72C89ADC1006367EF /* PlayerButtonStyle.swift in Sources */,
 				557D25B22C89CF82006367EF /* SpeedButton.swift in Sources */,
+				5517E3132C8A52BB008F2599 /* PlayerState.swift in Sources */,
+				5517E3172C8A615B008F2599 /* Summary.swift in Sources */,
+				5517E30B2C8A3EE2008F2599 /* AudioPlayerService.swift in Sources */,
 				557D25AC2C89C8C7006367EF /* PlaybackSpeedView.swift in Sources */,
-				55C7C4112C88D51200A78DFF /* ContentView.swift in Sources */,
+				55C7C4112C88D51200A78DFF /* AudioPlayerView.swift in Sources */,
 				55C7C40F2C88D51200A78DFF /* HeadwayAudioPlayerApp.swift in Sources */,
 				557D25A92C89BD83006367EF /* SpeedControlButtonStyle.swift in Sources */,
 				557D25A52C89113D006367EF /* BottomSheetView.swift in Sources */,
+				5517E3152C8A52CA008F2599 /* PlayerProgress.swift in Sources */,
+				5517E3102C8A4EAD008F2599 /* AudioPlayerFeature.swift in Sources */,
 				557D25AF2C89CEF3006367EF /* RoundedCorner.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -394,6 +430,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		5517E30C2C8A4D8E008F2599 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture";
+			requirement = {
+				kind = exactVersion;
+				version = 1.14.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		5517E30D2C8A4D8E008F2599 /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5517E30C2C8A4D8E008F2599 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 55C7C4032C88D51200A78DFF /* Project object */;
 }

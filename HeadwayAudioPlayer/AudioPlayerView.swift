@@ -1,17 +1,20 @@
 //
-//  ContentView.swift
+//  AudioPlayerView.swift
 //  HeadwayAudioPlayer
 //
 //  Created by Anastasia Holovash on 04.09.2024.
 //
 
 import SwiftUI
+import ComposableArchitecture
 
-struct ContentView: View {
+struct AudioPlayerView: View {
     @State private var progress: Double = 0.28
     @State private var isPlaying: Bool = true
     @State private var isPresented: Bool = false
     @State private var playbackSpeed: Double = 1
+
+    @Perception.Bindable var store: StoreOf<AudioPlayerFeature>
 
     var body: some View {
         VStack(spacing: Constants.largePadding) {
@@ -161,7 +164,7 @@ struct ContentView: View {
 
 }
 
-private extension ContentView {
+private extension AudioPlayerView {
 
     enum Constants {
         static let largePadding: CGFloat = 32
@@ -171,5 +174,12 @@ private extension ContentView {
 }
 
 #Preview {
-    ContentView()
+
+    AudioPlayerView(store: Store(
+        initialState: AudioPlayerFeature.State(),
+        reducer: {
+            AudioPlayerFeature()
+        }
+    ))
+
 }
