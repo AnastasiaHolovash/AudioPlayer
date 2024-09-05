@@ -10,6 +10,9 @@
 		557D25A52C89113D006367EF /* BottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557D25A42C89113D006367EF /* BottomSheetView.swift */; };
 		557D25A72C89ADC1006367EF /* PlayerButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557D25A62C89ADC1006367EF /* PlayerButtonStyle.swift */; };
 		557D25A92C89BD83006367EF /* SpeedControlButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557D25A82C89BD83006367EF /* SpeedControlButtonStyle.swift */; };
+		557D25AC2C89C8C7006367EF /* PlaybackSpeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557D25AB2C89C8C7006367EF /* PlaybackSpeedView.swift */; };
+		557D25AF2C89CEF3006367EF /* RoundedCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557D25AE2C89CEF3006367EF /* RoundedCorner.swift */; };
+		557D25B22C89CF82006367EF /* SpeedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557D25B12C89CF82006367EF /* SpeedButton.swift */; };
 		55C7C40F2C88D51200A78DFF /* HeadwayAudioPlayerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C7C40E2C88D51200A78DFF /* HeadwayAudioPlayerApp.swift */; };
 		55C7C4112C88D51200A78DFF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C7C4102C88D51200A78DFF /* ContentView.swift */; };
 		55C7C4132C88D51400A78DFF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55C7C4122C88D51400A78DFF /* Assets.xcassets */; };
@@ -20,6 +23,9 @@
 		557D25A42C89113D006367EF /* BottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetView.swift; sourceTree = "<group>"; };
 		557D25A62C89ADC1006367EF /* PlayerButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerButtonStyle.swift; sourceTree = "<group>"; };
 		557D25A82C89BD83006367EF /* SpeedControlButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedControlButtonStyle.swift; sourceTree = "<group>"; };
+		557D25AB2C89C8C7006367EF /* PlaybackSpeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackSpeedView.swift; sourceTree = "<group>"; };
+		557D25AE2C89CEF3006367EF /* RoundedCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedCorner.swift; sourceTree = "<group>"; };
+		557D25B12C89CF82006367EF /* SpeedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedButton.swift; sourceTree = "<group>"; };
 		55C7C40B2C88D51200A78DFF /* HeadwayAudioPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HeadwayAudioPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55C7C40E2C88D51200A78DFF /* HeadwayAudioPlayerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadwayAudioPlayerApp.swift; sourceTree = "<group>"; };
 		55C7C4102C88D51200A78DFF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -47,6 +53,24 @@
 			path = ButtonStyles;
 			sourceTree = "<group>";
 		};
+		557D25AD2C89CEE9006367EF /* Shape */ = {
+			isa = PBXGroup;
+			children = (
+				557D25AE2C89CEF3006367EF /* RoundedCorner.swift */,
+			);
+			path = Shape;
+			sourceTree = "<group>";
+		};
+		557D25B02C89CF63006367EF /* BottomSheet */ = {
+			isa = PBXGroup;
+			children = (
+				557D25A42C89113D006367EF /* BottomSheetView.swift */,
+				557D25B12C89CF82006367EF /* SpeedButton.swift */,
+				557D25AB2C89C8C7006367EF /* PlaybackSpeedView.swift */,
+			);
+			path = BottomSheet;
+			sourceTree = "<group>";
+		};
 		55C7C4022C88D51200A78DFF = {
 			isa = PBXGroup;
 			children = (
@@ -68,7 +92,8 @@
 			children = (
 				55C7C40E2C88D51200A78DFF /* HeadwayAudioPlayerApp.swift */,
 				55C7C4102C88D51200A78DFF /* ContentView.swift */,
-				557D25A42C89113D006367EF /* BottomSheetView.swift */,
+				557D25B02C89CF63006367EF /* BottomSheet */,
+				557D25AD2C89CEE9006367EF /* Shape */,
 				557D25AA2C89BD91006367EF /* ButtonStyles */,
 				55C7C4122C88D51400A78DFF /* Assets.xcassets */,
 				55C7C4142C88D51400A78DFF /* Preview Content */,
@@ -155,10 +180,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				557D25A72C89ADC1006367EF /* PlayerButtonStyle.swift in Sources */,
+				557D25B22C89CF82006367EF /* SpeedButton.swift in Sources */,
+				557D25AC2C89C8C7006367EF /* PlaybackSpeedView.swift in Sources */,
 				55C7C4112C88D51200A78DFF /* ContentView.swift in Sources */,
 				55C7C40F2C88D51200A78DFF /* HeadwayAudioPlayerApp.swift in Sources */,
 				557D25A92C89BD83006367EF /* SpeedControlButtonStyle.swift in Sources */,
 				557D25A52C89113D006367EF /* BottomSheetView.swift in Sources */,
+				557D25AF2C89CEF3006367EF /* RoundedCorner.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

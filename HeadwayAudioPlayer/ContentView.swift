@@ -11,6 +11,7 @@ struct ContentView: View {
     @State private var progress: Double = 0.28
     @State private var isPlaying: Bool = true
     @State private var isPresented: Bool = false
+    @State private var playbackSpeed: Double = 1
 
     var body: some View {
         VStack(spacing: Constants.largePadding) {
@@ -26,7 +27,7 @@ struct ContentView: View {
         .background(Color.gray.opacity(0.1))
         .overlay {
             if isPresented {
-                BottomSheetView(isPresented: $isPresented)
+                BottomSheetView(isPresented: $isPresented, playbackSpeed: $playbackSpeed)
             }
         }
         
@@ -81,7 +82,7 @@ struct ContentView: View {
                 Button(action: {
                     isPresented = true
                 }) {
-                    Text("1x speed")
+                    Text("\(playbackSpeed)x speed")
                         .font(.subheadline)
                         .foregroundStyle(Color.black)
                         .padding(.vertical, 5)
