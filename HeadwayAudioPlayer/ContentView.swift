@@ -10,6 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @State private var progress: Double = 0.28
     @State private var isPlaying: Bool = true
+    @State private var isPresented: Bool = false
 
     var body: some View {
         VStack(spacing: Constants.largePadding) {
@@ -23,6 +24,12 @@ struct ContentView: View {
         }
         .padding()
         .background(Color.gray.opacity(0.1))
+        .overlay {
+            if isPresented {
+                BottomSheetView(isPresented: $isPresented)
+            }
+        }
+        
     }
 
     private var headerView: some View {
@@ -72,7 +79,7 @@ struct ContentView: View {
                 }
 
                 Button(action: {
-
+                    isPresented = true
                 }) {
                     Text("1x speed")
                         .font(.subheadline)
