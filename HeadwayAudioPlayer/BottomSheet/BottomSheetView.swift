@@ -10,9 +10,21 @@ import SwiftUI
 struct BottomSheetView: View {
 
     @State private var bottomSheetIsVisible = false
-    @Binding var isPresented: Bool
-    @Binding var playbackSpeed: Double
     @State private var dragOffset = CGFloat.zero
+
+    @Binding private var isPresented: Bool
+    private let playbackSpeedSelected: (Float) -> Void
+    private let playbackSpeed: Float
+
+    init(
+        playbackSpeed: Float,
+        isPresented: Binding<Bool>,
+        playbackSpeedSelected: @escaping (Float) -> Void
+    ) {
+        self._isPresented = isPresented
+        self.playbackSpeedSelected = playbackSpeedSelected
+        self.playbackSpeed = playbackSpeed
+    }
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -32,9 +44,11 @@ struct BottomSheetView: View {
     }
 
     private var contentView: some View {
-        PlaybackSpeedView(playbackSpeed: $playbackSpeed) {
-            animatedDisappear()
-        }
+        PlaybackSpeedView(
+            playbackSpeed: playbackSpeed, 
+            playbackSpeedSelected: playbackSpeedSelected,
+            continueTapped: { animatedDisappear() }
+        )
         .transition(.move(edge: .bottom))
         .offset(y: dragOffset)
         .gesture(DragGesture()
@@ -86,5 +100,9 @@ struct BottomSheetView: View {
 }
 
 #Preview {
-    BottomSheetView(isPresented: .constant(true), playbackSpeed: .constant(1))
+    BottomSheetView(
+        playbackSpeed: 1,
+        isPresented: .constant(true),
+        playbackSpeedSelected: { _ in }
+    )
 }

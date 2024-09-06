@@ -10,8 +10,8 @@ import SwiftUI
 struct SpeedButton: View {
 
     let label: String
-    let speed: Double
-    @Binding var playbackSpeed: Double
+    let speed: Float
+    @Binding var playbackSpeed: Float
 
     var body: some View {
         Button {

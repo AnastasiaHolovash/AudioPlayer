@@ -15,7 +15,7 @@ struct AudioPlayerService {
     var pause: () -> Void
     var resume: () -> Void
     var setRate: (_ rate: Float) -> Void
-    var seek: (_ time: CMTime) -> Void
+    var seek: (_ time: Float64) async -> Void
 }
 
 extension DependencyValues {
@@ -74,19 +74,32 @@ extension AudioPlayerService {
                 do {
                     /// Wait for loading
                     try await player.readyToPlay()
-
-                    /// Start playing
-                    //                newContinuation.yield(.playing(0))
                     await player.play()
-
-                    /// Observe progress
-                    addProgressObserver()
-
-                    /// Wait for till finished
-                    let notificationCenter = NotificationCenter.default
-                    let didPlayToEnd = AVPlayerItem.didPlayToEndTimeNotification
-                    _ = await notificationCenter.notifications(named: didPlayToEnd).first(where: { _ in true })
-                    //                try? await Task.sleep(300)
+                    await withTaskGroup(of: Void.self) { group in
+                        group.addTask {
+                            for await value in self.player.periodicTimeUpdates {
+                                self.player.timeControlStatus
+                                newContinuation.yield(.playing(value))
+                            }
+                        }
+                        group.addTask {
+                            for await value in self.player.statusUpdates {
+                                print("!! value: \(value)")
+                                print("!! value: \(value)")
+                            }
+                        }
+                        group.addTask {
+                            let notificationCenter = NotificationCenter.default
+                            let didPlayToEnd = AVPlayerItem.didPlayToEndTimeNotification
+                            _ = await notificationCenter.notifications(named: didPlayToEnd).makeAsyncIterator().next()
+                        }
+                        group.addTask {
+                            let notificationCenter = NotificationCenter.default
+                            let didPlayToEnd = AVPlayerItem.failedToPlayToEndTimeNotification
+                            _ = await notificationCenter.notifications(named: didPlayToEnd).makeAsyncIterator().next()
+                        }
+                        await group.first(where: { true })
+                    }
                     newContinuation.yield(.idle)
                     newContinuation.finish()
                 } catch {
@@ -94,10 +107,11 @@ extension AudioPlayerService {
                     newContinuation.finish()
                 }
             }
-
             newContinuation.onTermination = { [weak self] _ in
                 task.cancel()
-                self?.removeProgressObserver()
+                self?.player.pause()
+                self?.player.replaceCurrentItem(with: nil)
+                self?.player.seek(to: .zero)
                 self?.continuation = nil
             }
             return stream
@@ -105,11 +119,11 @@ extension AudioPlayerService {
 
         func resume() {
             player.play()
-            addProgressObserver()
+//            addProgressObserver()
         }
 
         func pause() {
-            removeProgressObserver()
+//            removeProgressObserver()
             player.pause()
             continuation?.yield(.paused)
         }
@@ -118,8 +132,9 @@ extension AudioPlayerService {
             player.rate = rate
         }
 
-        func seek(to time: CMTime) {
-            player.seek(to: time)
+        func seek(to time: Float64) async {
+            let cmTime = CMTimeMakeWithSeconds(time, preferredTimescale: 600)
+            await player.seek(to: cmTime)
         }
 
         private func setupSession() {
@@ -134,45 +149,74 @@ extension AudioPlayerService {
             do {
                 try session.setCategory(.playback, options: options)
             } catch {
-                reportIssue("Set category error \(error.localizedDescription)")
+                print("Set category error \(error.localizedDescription)")
             }
             do {
                 try session.setActive(true, options: [.notifyOthersOnDeactivation])
             } catch {
-                reportIssue("Set active error \(error.localizedDescription)")
+                print("Set active error \(error.localizedDescription)")
             }
         }
+    }
+}
 
-        private func addProgressObserver() {
-            let interval = CMTime(seconds: 0.1, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
-            progressObserver = player.addPeriodicTimeObserver(forInterval: interval, queue: .main) { [weak self] time in
-                guard
-                    let self,
-                    let duration = self.playerItem?.duration
-                else {
-                    return
-                }
+enum PlayerStatus {
+    case playing
+    case paused
+}
 
-                let totalSeconds = CMTimeGetSeconds(duration)
-                let currentSeconds = CMTimeGetSeconds(time)
-                let progress = currentSeconds / totalSeconds
-                self.continuation?.yield(.playing(PlayerProgress(
+extension AVPlayer {
+    nonisolated var periodicTimeUpdates: AsyncStream<PlayerProgress> {
+        let interval = CMTime(seconds: 0.1, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
+        let (stream, continuation) = AsyncStream<PlayerProgress>.makeStream()
+        let progressObserver = addPeriodicTimeObserver(
+            forInterval: interval,
+            queue: .main
+        ) { [weak self] time in
+            guard let self, let duration = currentItem?.duration else {
+                return
+            }
+
+            let totalSeconds = CMTimeGetSeconds(duration)
+            let currentSeconds = CMTimeGetSeconds(time)
+            let progress = currentSeconds / totalSeconds
+            continuation.yield(
+                PlayerProgress(
                     progress: progress,
                     totalSeconds: totalSeconds,
                     currentSeconds: currentSeconds
-                )))
-            }
+                )
+            )
         }
-
-        private func removeProgressObserver() {
-            if let token = progressObserver {
-                player.removeTimeObserver(token)
-                progressObserver = nil
-            }
+        continuation.onTermination = { [weak self] _ in
+            self?.removeTimeObserver(progressObserver)
+            print("!!! periodicTimeUpdates canceleld")
         }
-
+        return stream
     }
 
+    nonisolated var statusUpdates: AsyncStream<PlayerStatus> {
+        let (stream, continuation) = AsyncStream<PlayerStatus>.makeStream()
+        let observation = observe(\.timeControlStatus, options: [.new, .old]) { playerItem, change in
+            switch playerItem.timeControlStatus {
+            case .paused:
+                continuation.yield(.paused)
+                print("Media Paused")
+            case .playing:
+                continuation.yield(.playing)
+                print("Media Playing")
+            case .waitingToPlayAtSpecifiedRate:
+                print("Media Waiting to play at specific rate!")
+                continuation.yield(.playing)
+            @unknown default:
+                fatalError()
+            }
+        }
+        continuation.onTermination = { _ in
+            observation.invalidate()
+        }
+        return stream
+    }
 }
 
 private extension AVPlayer {
@@ -199,4 +243,56 @@ private extension AVPlayer {
         }
     }
 
+}
+
+
+enum PlayerState {
+    case idle
+    case loading
+    case playing(PlayerProgress)
+    case paused
+    case failed(Error)
+
+    var isPlaying: Bool {
+        switch self {
+        case .playing:
+            true
+        
+        case .idle,
+             .loading,
+             .paused,
+             .failed:
+            false
+        }
+    }
+
+    var progress: PlayerProgress {
+        switch self {
+        case let .playing(progress):
+            progress
+
+        case .idle,
+             .loading,
+             .paused,
+             .failed:
+            PlayerProgress(
+                progress: .zero,
+                totalSeconds: .zero,
+                currentSeconds: .zero
+            )
+        }
+    }
+}
+
+enum PlayerState2 {
+    case loading
+    case playing(PlayerProgress)
+    case paused(PlayerProgress)
+    case failed
+}
+
+struct PlayerProgress {
+    let progress: CGFloat
+    let totalSeconds: Float64
+    let currentSeconds: Float64
 }

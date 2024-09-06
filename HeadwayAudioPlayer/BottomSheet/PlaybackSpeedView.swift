@@ -9,8 +9,19 @@ import SwiftUI
 
 struct PlaybackSpeedView: View {
 
-    @Binding var playbackSpeed: Double
-    let continueTap: () -> Void
+    @State private var playbackSpeed: Float
+    private let playbackSpeedSelected: (Float) -> Void
+    private let continueTapped: () -> Void
+
+    init(
+        playbackSpeed: Float,
+        playbackSpeedSelected: @escaping (Float) -> Void,
+        continueTapped: @escaping () -> Void
+    ) {
+        self.playbackSpeed = playbackSpeed
+        self.playbackSpeedSelected = playbackSpeedSelected
+        self.continueTapped = continueTapped
+    }
 
     var body: some View {
         VStack(spacing: 16) {
@@ -31,7 +42,7 @@ struct PlaybackSpeedView: View {
                 .buttonStyle(SpeedControlButtonStyle())
                 .frame(width: 48, height: 48)
 
-                Text("\(String(format: "%.1fx", playbackSpeed))")
+                Text(String(format: "%.1fx", playbackSpeed))
                     .font(.title)
                     .fontWeight(.bold)
                     .foregroundStyle(.blue)
@@ -57,7 +68,7 @@ struct PlaybackSpeedView: View {
             }
 
             Button {
-                continueTap()
+                continueTapped()
             } label: {
                 Text("Continue")
                     .foregroundColor(.white)
@@ -73,6 +84,9 @@ struct PlaybackSpeedView: View {
         .padding(.bottom, 48) // TODO: Change
         .background(Color.white)
         .clipShape(RoundedCorner(radius: 20, corners: [.topLeft, .topRight]) )
+        .onChange(of: playbackSpeed) { newValue in
+            playbackSpeedSelected(newValue)
+        }
     }
 
     private var sliderView: some View {

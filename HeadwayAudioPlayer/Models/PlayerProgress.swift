@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct PlayerProgress {
-    let progress: CGFloat
-    let totalSeconds: Float64
-    let currentSeconds: Float64
-}
+//struct PlayerProgress {
+//    let progress: CGFloat
+//    let totalSeconds: Float64
+//    let currentSeconds: Float64
+//}

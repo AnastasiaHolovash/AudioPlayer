@@ -7,10 +7,10 @@
 
 import Foundation
 
-enum PlayerState {
-    case idle
-    case loading
-    case playing(PlayerProgress)
-    case paused
-    case failed(Error)
-}
+//enum PlayerState {
+//    case idle
+//    case loading
+//    case playing(PlayerProgress)
+//    case paused
+//    case failed(Error)
+//}
