@@ -72,20 +72,35 @@ extension AudioPlayerService {
 
             let task = Task {
                 do {
-                    /// Wait for loading
                     try await player.readyToPlay()
                     await player.play()
                     await withTaskGroup(of: Void.self) { group in
                         group.addTask {
                             for await value in self.player.periodicTimeUpdates {
-                                self.player.timeControlStatus
-                                newContinuation.yield(.playing(value))
+                                guard let state = self.buildState(
+                                    duration: value.duration,
+                                    time: value.time,
+                                    controlStatus: self.player.controlStatus
+                                ) else {
+                                    return
+                                }
+
+                                newContinuation.yield(state)
                             }
                         }
                         group.addTask {
                             for await value in self.player.statusUpdates {
-                                print("!! value: \(value)")
-                                print("!! value: \(value)")
+                                guard let currentItemProgress = self.player.currentItemProgress,
+                                      let state = self.buildState(
+                                        duration: currentItemProgress.duration,
+                                        time: currentItemProgress.time,
+                                        controlStatus: value
+                                    )
+                                else {
+                                    return
+                                }
+
+                                newContinuation.yield(state)
                             }
                         }
                         group.addTask {
@@ -119,13 +134,10 @@ extension AudioPlayerService {
 
         func resume() {
             player.play()
-//            addProgressObserver()
         }
 
         func pause() {
-//            removeProgressObserver()
             player.pause()
-            continuation?.yield(.paused)
         }
 
         func setRate(rate: Float) {
@@ -157,36 +169,62 @@ extension AudioPlayerService {
                 print("Set active error \(error.localizedDescription)")
             }
         }
+
+        private func buildState(
+            duration: CMTime,
+            time: CMTime,
+            controlStatus: ControlStatus
+        ) -> PlayerState? {
+            guard duration.isNumeric, time.isNumeric else {
+                return nil
+            }
+
+            let playerProgress = PlayerProgress(
+                totalSeconds: CMTimeGetSeconds(duration),
+                currentSeconds: CMTimeGetSeconds(time)
+            )
+
+            return switch controlStatus {
+            case .playing:
+                .playing(playerProgress)
+
+            case .paused:
+                .paused(playerProgress)
+            }
+        }
     }
 }
 
-enum PlayerStatus {
-    case playing
-    case paused
+extension AudioPlayerService {
+
+    enum ControlStatus {
+        case playing
+        case paused
+    }
+
+    struct CurrentItemProgress {
+        let duration: CMTime
+        let time: CMTime
+    }
+
 }
 
 extension AVPlayer {
-    nonisolated var periodicTimeUpdates: AsyncStream<PlayerProgress> {
+
+    nonisolated var periodicTimeUpdates: AsyncStream<AudioPlayerService.CurrentItemProgress> {
         let interval = CMTime(seconds: 0.1, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
-        let (stream, continuation) = AsyncStream<PlayerProgress>.makeStream()
+        let (stream, continuation) = AsyncStream<AudioPlayerService.CurrentItemProgress>.makeStream()
         let progressObserver = addPeriodicTimeObserver(
             forInterval: interval,
             queue: .main
         ) { [weak self] time in
-            guard let self, let duration = currentItem?.duration else {
+            guard let self,
+                  let currentItemProgress
+            else {
                 return
             }
 
-            let totalSeconds = CMTimeGetSeconds(duration)
-            let currentSeconds = CMTimeGetSeconds(time)
-            let progress = currentSeconds / totalSeconds
-            continuation.yield(
-                PlayerProgress(
-                    progress: progress,
-                    totalSeconds: totalSeconds,
-                    currentSeconds: currentSeconds
-                )
-            )
+            continuation.yield(currentItemProgress)
         }
         continuation.onTermination = { [weak self] _ in
             self?.removeTimeObserver(progressObserver)
@@ -195,22 +233,10 @@ extension AVPlayer {
         return stream
     }
 
-    nonisolated var statusUpdates: AsyncStream<PlayerStatus> {
-        let (stream, continuation) = AsyncStream<PlayerStatus>.makeStream()
+    nonisolated var statusUpdates: AsyncStream<AudioPlayerService.ControlStatus> {
+        let (stream, continuation) = AsyncStream<AudioPlayerService.ControlStatus>.makeStream()
         let observation = observe(\.timeControlStatus, options: [.new, .old]) { playerItem, change in
-            switch playerItem.timeControlStatus {
-            case .paused:
-                continuation.yield(.paused)
-                print("Media Paused")
-            case .playing:
-                continuation.yield(.playing)
-                print("Media Playing")
-            case .waitingToPlayAtSpecifiedRate:
-                print("Media Waiting to play at specific rate!")
-                continuation.yield(.playing)
-            @unknown default:
-                fatalError()
-            }
+            continuation.yield(playerItem.controlStatus)
         }
         continuation.onTermination = { _ in
             observation.invalidate()
@@ -245,54 +271,36 @@ private extension AVPlayer {
 
 }
 
+private extension AVPlayer {
 
-enum PlayerState {
-    case idle
-    case loading
-    case playing(PlayerProgress)
-    case paused
-    case failed(Error)
+    var controlStatus: AudioPlayerService.ControlStatus {
+        switch timeControlStatus {
+        case .paused:
+            print("Media Paused")
+            return .paused
 
-    var isPlaying: Bool {
-        switch self {
         case .playing:
-            true
-        
-        case .idle,
-             .loading,
-             .paused,
-             .failed:
-            false
+            print("Media Playing")
+            return .playing
+
+        case .waitingToPlayAtSpecifiedRate:
+            print("Media Waiting to play at specific rate!")
+            return .playing
+
+        @unknown default:
+            fatalError()
         }
     }
 
-    var progress: PlayerProgress {
-        switch self {
-        case let .playing(progress):
-            progress
-
-        case .idle,
-             .loading,
-             .paused,
-             .failed:
-            PlayerProgress(
-                progress: .zero,
-                totalSeconds: .zero,
-                currentSeconds: .zero
-            )
+    var currentItemProgress: AudioPlayerService.CurrentItemProgress? {
+        guard let currentItem else {
+            return nil
         }
+
+        return AudioPlayerService.CurrentItemProgress(
+            duration: currentItem.duration,
+            time: currentItem.currentTime()
+        )
     }
-}
 
-enum PlayerState2 {
-    case loading
-    case playing(PlayerProgress)
-    case paused(PlayerProgress)
-    case failed
-}
-
-struct PlayerProgress {
-    let progress: CGFloat
-    let totalSeconds: Float64
-    let currentSeconds: Float64
 }

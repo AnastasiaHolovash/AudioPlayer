@@ -31,7 +31,6 @@ struct AudioPlayerFeature {
         case pauseTapped
         case seekForwardTapped
         case seekBackwardTapped
-        case seekToTapped(time: Float)
         case nextKeyPointTapped
         case previousKeyPointTapped
         case speedSelected(speed: Float)
@@ -50,16 +49,11 @@ struct AudioPlayerFeature {
         Reduce<State, Action> { state, action in
             switch action {
             case .playTapped:
-                guard let audioURL = state.currentKeyPoint.audioURL else {
-                    reportIssue("Invalid audio UR")
+                if state.playerState.isPaused {
+                    audioPlayerService.resume()
                     return .none
-                }
-
-                return .run { send in
-                    for await playerState in audioPlayerService.play(url: audioURL) {
-                        print("!!! changed \(playerState)")
-                        await send(.setPlayerState(playerState))
-                    }
+                } else {
+                    return startPlaying(state: &state)
                 }
 
             case .pauseTapped:
@@ -84,9 +78,6 @@ struct AudioPlayerFeature {
                 return .run { _ in
                     await audioPlayerService.seek(time: secondsToSeekTo)
                 }
-
-            case .seekToTapped(time: let time):
-                return .none
             
             case .nextKeyPointTapped:
                 guard state.currentKeyPoint.orderNumber < state.summary.keyPoints.count - 1 else {
@@ -94,15 +85,15 @@ struct AudioPlayerFeature {
                 }
 
                 state.currentKeyPoint = state.summary.keyPoints[state.currentKeyPoint.orderNumber + 1]
-                return .none
-            
+                return startPlaying(state: &state)
+
             case .previousKeyPointTapped:
                 guard state.currentKeyPoint.orderNumber > 0 else {
                     return .none
                 }
 
                 state.currentKeyPoint = state.summary.keyPoints[state.currentKeyPoint.orderNumber - 1]
-                return .none
+                return startPlaying(state: &state)
 
             case let .speedSelected(speed):
                 state.playbackSpeed = speed
@@ -138,6 +129,20 @@ struct AudioPlayerFeature {
 
             case .binding:
                 return .none
+            }
+        }
+    }
+
+    private func startPlaying(state: inout State) -> Effect<Action> {
+        guard let audioURL = state.currentKeyPoint.audioURL else {
+            reportIssue("Invalid audio UR")
+            return .none
+        }
+
+        return .run { send in
+            for await playerState in audioPlayerService.play(url: audioURL) {
+                print("!!! changed \(playerState)")
+                await send(.setPlayerState(playerState))
             }
         }
     }

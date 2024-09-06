@@ -9,9 +9,8 @@ import SwiftUI
 import ComposableArchitecture
 
 struct AudioPlayerView: View {
-    @State private var progress: Double = 0.28
+    
     @State private var isPresented: Bool = false
-
     @Perception.Bindable var store: StoreOf<AudioPlayerFeature>
 
     var body: some View {
@@ -73,30 +72,23 @@ struct AudioPlayerView: View {
         VStack(spacing: .zero) {
             VStack(spacing: 16) {
                 HStack {
-                    Text(store.playerState.progress.currentSeconds.formattedTime)
-                        .frame(width: 40)
-                        .font(.caption)
-                        .foregroundColor(.gray)
-
                     Slider(
                         value: $store.currentSeconds,
                         in: 0...store.playerState.progress.totalSeconds
                     ) {
-                        Text("Speed")
+                        EmptyView()
                     } minimumValueLabel: {
-                        Text("0")
+                        Text(store.playerState.progress.currentSeconds.formattedTime)
+                            .font(.caption)
+                            .foregroundColor(.gray)
                     } maximumValueLabel: {
-                        Text("100")
+                        Text(store.playerState.progress.totalSeconds.formattedTime)
+                            .font(.caption)
+                            .foregroundColor(.gray)
                     } onEditingChanged: { isEditing in
                         store.send(.setIsEditing(isEditing))
-                        print("--- editing: \(isEditing)")
                     }
-//                    .animation(.easeIn, value: store.currentSeconds)
-
-                    Text(store.playerState.progress.totalSeconds.formattedTime)
-                        .frame(width: 40)
-                        .font(.caption)
-                        .foregroundColor(.gray)
+                    .animation(.easeIn, value: store.currentSeconds)
                 }
 
                 Button(action: {
@@ -136,8 +128,12 @@ struct AudioPlayerView: View {
             Button {
                 store.send(store.playerState.isPlaying ? .pauseTapped : .playTapped)
             } label: {
-                Image(systemName: store.playerState.isPlaying ? "pause.fill" : "play.fill")
-                    .font(.system(size: 34, weight: .medium))
+                if store.playerState.isLoading {
+                    ProgressView()
+                } else {
+                    Image(systemName: store.playerState.isPlaying ? "pause.fill" : "play.fill")
+                        .font(.system(size: 34, weight: .medium))
+                }
             }
 
             Button {
@@ -156,6 +152,7 @@ struct AudioPlayerView: View {
         }
         .buttonStyle(PlayerButtonStyle())
         .foregroundColor(.primary)
+        .allowsTightening(!store.playerState.isLoading)
     }
 
     private var textAudioToggleView: some View {

@@ -7,10 +7,68 @@
 
 import Foundation
 
-//enum PlayerState {
-//    case idle
-//    case loading
-//    case playing(PlayerProgress)
-//    case paused
-//    case failed(Error)
-//}
+enum PlayerState {
+    case idle
+    case loading
+    case playing(PlayerProgress)
+    case paused(PlayerProgress)
+    case failed(Error)
+}
+
+extension PlayerState {
+
+    var isPlaying: Bool {
+        switch self {
+        case .playing:
+            true
+
+        case .idle,
+             .loading,
+             .paused,
+             .failed:
+            false
+        }
+    }
+
+    var isPaused: Bool {
+        switch self {
+        case .paused:
+            true
+
+        case .idle,
+             .loading,
+             .playing,
+             .failed:
+            false
+        }
+    }
+
+    var isLoading: Bool {
+        switch self {
+        case .loading:
+            true
+
+        case .idle,
+             .playing,
+             .paused,
+             .failed:
+            false
+        }
+    }
+
+    var progress: PlayerProgress {
+        switch self {
+        case let .playing(progress),
+             let .paused(progress):
+            progress
+
+        case .idle,
+             .loading,
+             .failed:
+            PlayerProgress(
+                totalSeconds: .zero,
+                currentSeconds: .zero
+            )
+        }
+    }
+}
