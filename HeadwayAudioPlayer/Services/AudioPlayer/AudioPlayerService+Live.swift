@@ -47,61 +47,7 @@ extension AudioPlayerService {
             newContinuation.yield(.loading)
 
             let task = Task {
-                await player.play()
-                await MainActor.run {
-                    player.rate = currentRate.value
-                }
-                let result = await withTaskGroup(of: Bool.self) { group in
-                    group.addTask {
-                        for await value in self.player.periodicTimeUpdates {
-                            guard let state = self.buildState(
-                                duration: value.duration,
-                                time: value.time,
-                                controlStatus: self.player.controlStatus
-                            ) else {
-                                continue
-                            }
-
-                            newContinuation.yield(state)
-                        }
-                        return true
-                    }
-                    group.addTask {
-                        for await value in self.player.statusUpdates {
-                            guard let currentItemProgress = self.player.currentItemProgress,
-                                  let state = self.buildState(
-                                    duration: currentItemProgress.duration,
-                                    time: currentItemProgress.time,
-                                    controlStatus: value
-                                )
-                            else {
-                                continue
-                            }
-
-                            newContinuation.yield(state)
-                        }
-                        return true
-                    }
-                    group.addTask {
-                        _ = await NotificationCenter.default
-                            .notifications(named: AVPlayerItem.didPlayToEndTimeNotification)
-                            .makeAsyncIterator()
-                            .next()
-                        return true
-                    }
-                    group.addTask {
-                        _ = await NotificationCenter.default
-                            .notifications(named: AVPlayerItem.failedToPlayToEndTimeNotification)
-                            .makeAsyncIterator()
-                            .next()
-                        return false
-                    }
-
-                    defer { group.cancelAll() }
-                    return await group.next() ?? false
-                }
-                newContinuation.yield(result ? .finished : .idle)
-                newContinuation.finish()
+                await startPlaying(continuation: newContinuation)
             }
             newContinuation.onTermination = { [weak self] _ in
                 task.cancel()
@@ -127,8 +73,66 @@ extension AudioPlayerService {
         }
 
         func seek(to time: Double) async {
-            let cmTime = CMTimeMakeWithSeconds(time, preferredTimescale: 600)
+            let cmTime = CMTime(seconds: time, preferredTimescale: 600)
             await player.seek(to: cmTime)
+        }
+
+        private func startPlaying(continuation: AsyncStream<PlayerState>.Continuation) async {
+            await player.play()
+            await MainActor.run {
+                player.rate = currentRate.value
+            }
+            let result = await withTaskGroup(of: Bool.self) { group in
+                group.addTask {
+                    for await value in self.player.periodicTimeUpdates {
+                        guard let state = self.buildState(
+                            duration: value.duration,
+                            time: value.time,
+                            controlStatus: self.player.controlStatus
+                        ) else {
+                            continue
+                        }
+
+                        continuation.yield(state)
+                    }
+                    return true
+                }
+                group.addTask {
+                    for await value in self.player.statusUpdates {
+                        guard let currentItemProgress = self.player.currentItemProgress,
+                              let state = self.buildState(
+                                duration: currentItemProgress.duration,
+                                time: currentItemProgress.time,
+                                controlStatus: value
+                            )
+                        else {
+                            continue
+                        }
+
+                        continuation.yield(state)
+                    }
+                    return true
+                }
+                group.addTask {
+                    _ = await NotificationCenter.default
+                        .notifications(named: AVPlayerItem.didPlayToEndTimeNotification)
+                        .makeAsyncIterator()
+                        .next()
+                    return true
+                }
+                group.addTask {
+                    _ = await NotificationCenter.default
+                        .notifications(named: AVPlayerItem.failedToPlayToEndTimeNotification)
+                        .makeAsyncIterator()
+                        .next()
+                    return false
+                }
+
+                defer { group.cancelAll() }
+                return await group.next() ?? false
+            }
+            continuation.yield(result ? .finished : .idle)
+            continuation.finish()
         }
 
         private func setupSession() {
