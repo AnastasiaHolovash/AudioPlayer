@@ -13,17 +13,14 @@ struct BottomSheetView: View {
     @State private var dragOffset = CGFloat.zero
 
     @Binding private var isPresented: Bool
-    private let playbackSpeedSelected: (Float) -> Void
-    private let playbackSpeed: Float
+    @Binding private var playbackSpeed: Float
 
     init(
-        playbackSpeed: Float,
-        isPresented: Binding<Bool>,
-        playbackSpeedSelected: @escaping (Float) -> Void
+        playbackSpeed: Binding<Float>,
+        isPresented: Binding<Bool>
     ) {
         self._isPresented = isPresented
-        self.playbackSpeedSelected = playbackSpeedSelected
-        self.playbackSpeed = playbackSpeed
+        self._playbackSpeed = playbackSpeed
     }
 
     var body: some View {
@@ -45,8 +42,7 @@ struct BottomSheetView: View {
 
     private var contentView: some View {
         PlaybackSpeedView(
-            playbackSpeed: playbackSpeed, 
-            playbackSpeedSelected: playbackSpeedSelected,
+            playbackSpeed: $playbackSpeed,
             continueTapped: { animatedDisappear() }
         )
         .transition(.move(edge: .bottom))
@@ -101,8 +97,7 @@ struct BottomSheetView: View {
 
 #Preview {
     BottomSheetView(
-        playbackSpeed: 1,
-        isPresented: .constant(true),
-        playbackSpeedSelected: { _ in }
+        playbackSpeed: .constant(1),
+        isPresented: .constant(true)
     )
 }

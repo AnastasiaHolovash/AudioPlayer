@@ -15,7 +15,7 @@ struct AudioPlayerService {
     var pause: () -> Void
     var resume: () -> Void
     var setRate: (_ rate: Float) -> Void
-    var seek: (_ time: Float64) async -> Void
+    var seek: (_ time: Double) async -> Void
 }
 
 extension DependencyValues {

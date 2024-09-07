@@ -9,17 +9,14 @@ import SwiftUI
 
 struct PlaybackSpeedView: View {
 
-    @State private var playbackSpeed: Float
-    private let playbackSpeedSelected: (Float) -> Void
+    @Binding private var playbackSpeed: Float
     private let continueTapped: () -> Void
 
     init(
-        playbackSpeed: Float,
-        playbackSpeedSelected: @escaping (Float) -> Void,
+        playbackSpeed: Binding<Float>,
         continueTapped: @escaping () -> Void
     ) {
-        self.playbackSpeed = playbackSpeed
-        self.playbackSpeedSelected = playbackSpeedSelected
+        self._playbackSpeed = playbackSpeed
         self.continueTapped = continueTapped
     }
 
@@ -97,7 +94,7 @@ struct PlaybackSpeedView: View {
         .background(Color.white)
         .clipShape(RoundedCorner(radius: 20, corners: [.topLeft, .topRight]) )
         .onChange(of: playbackSpeed) { newValue in
-            playbackSpeedSelected(newValue)
+            playbackSpeed = newValue
         }
     }
 

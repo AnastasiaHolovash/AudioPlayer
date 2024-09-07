@@ -125,7 +125,7 @@ extension AudioPlayerService {
             player.rate = rate
         }
 
-        func seek(to time: Float64) async {
+        func seek(to time: Double) async {
             let cmTime = CMTimeMakeWithSeconds(time, preferredTimescale: 600)
             await player.seek(to: cmTime)
         }
@@ -210,6 +210,7 @@ private extension AVPlayer {
         }
         return stream
     }
+    
 }
 
 private extension AVPlayer {

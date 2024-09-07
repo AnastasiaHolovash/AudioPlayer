@@ -8,6 +8,6 @@
 import Foundation
 
 struct PlayerProgress {
-    let totalSeconds: Float64
-    let currentSeconds: Float64
+    let totalSeconds: Double
+    let currentSeconds: Double
 }

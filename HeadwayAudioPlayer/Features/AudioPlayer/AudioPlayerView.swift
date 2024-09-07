@@ -8,9 +8,9 @@
 import SwiftUI
 import ComposableArchitecture
 
+@ViewAction(for: AudioPlayerFeature.self)
 struct AudioPlayerView: View {
     
-    @State private var isPresented: Bool = false
     @Perception.Bindable var store: StoreOf<AudioPlayerFeature>
 
     var body: some View {
@@ -27,13 +27,11 @@ struct AudioPlayerView: View {
             .padding()
             .background(Color.gray.opacity(0.1))
             .overlay {
-                if isPresented {
+                if store.destination?.playbackSpeed != nil {
                     BottomSheetView(
-                        playbackSpeed: store.playbackSpeed,
-                        isPresented: $isPresented
-                    ) { speed in
-                        store.send(.speedSelected(speed: speed))
-                    }
+                        playbackSpeed: $store.playbackSpeed,
+                        isPresented: Binding($store.destination.playbackSpeed)
+                    )
                 }
             }
         }
@@ -55,7 +53,7 @@ struct AudioPlayerView: View {
                     .strokeBorder(Color.gray.opacity(0.3), lineWidth: 1)
             }
 
-            VStack(spacing: 16) {
+            VStack(spacing: Constants.padding) {
                 Text("Key point \(store.currentKeyPointOrderNumberUIValue) of \(store.summary.keyPoints.count)".uppercased())
                     .font(.system(size: 12))
                     .kerning(1)
@@ -73,35 +71,16 @@ struct AudioPlayerView: View {
 
     private var playerView: some View {
         VStack(spacing: .zero) {
-            VStack(spacing: 16) {
-                HStack {
-                    Text(store.playerState.progress.currentSeconds.formattedTime)
-                        .font(.caption)
-                        .foregroundColor(.gray)
-                        .frame(width: 40)
-
-                    Slider(
-                        value: $store.currentSeconds,
-                        in: 0...store.playerState.progress.totalSeconds
-                    ) { isEditing in
-                        store.send(.setIsEditing(isEditing))
-                    }
-                    .animation(.easeIn, value: store.currentSeconds)
-                    .allowsHitTesting(store.playerState.hasProgress)
-
-                    Text(store.playerState.progress.totalSeconds.formattedTime)
-                        .font(.caption)
-                        .foregroundColor(.gray)
-                        .frame(width: 40)
-                }
+            VStack(spacing: Constants.padding) {
+                sliderView
 
                 Button {
-                    isPresented = true
+                    send(.playbackSpeedTapped)
                 } label: {
                     Text(String(format: "%.1fx speed", store.playbackSpeed))
                         .font(.system(size: 10, weight: .bold))
                         .foregroundStyle(Color.black)
-                        .padding(8)
+                        .padding(Constants.smallPadding)
                         .background(Color(.systemGray5))
                         .cornerRadius(4)
                 }
@@ -112,10 +91,33 @@ struct AudioPlayerView: View {
         }
     }
 
+    private var sliderView: some View {
+        HStack {
+            Text(store.playerState.progress.currentSeconds.formattedTime)
+                .font(.caption)
+                .foregroundColor(.gray)
+                .frame(width: 40)
+
+            Slider(
+                value: $store.currentSeconds,
+                in: 0...store.playerState.progress.totalSeconds
+            ) { isEditing in
+                send(.setIsEditing(isEditing))
+            }
+            .animation(.easeIn, value: store.currentSeconds)
+            .allowsHitTesting(store.playerState.hasProgress)
+
+            Text(store.playerState.progress.totalSeconds.formattedTime)
+                .font(.caption)
+                .foregroundColor(.gray)
+                .frame(width: 40)
+        }
+    }
+
     private var playbackControlsView: some View {
         HStack(spacing: .zero) {
             Button {
-                store.send(.previousKeyPointTapped)
+                send(.previousKeyPointTapped)
             } label: {
                 Image(systemName: "backward.end")
                     .font(.system(size: 26, weight: .medium))
@@ -123,14 +125,14 @@ struct AudioPlayerView: View {
             .disabled(store.currentKeyPointOrderNumber == .zero)
 
             Button {
-                store.send(.seekBackwardTapped)
+                send(.seekBackwardTapped)
             } label: {
                 Image(systemName: "gobackward.5")
                     .font(.system(size: 26, weight: .medium))
             }
 
             Button {
-                store.send(store.playerState.isPlaying ? .pauseTapped : .playTapped)
+                send(store.playerState.isPlaying ? .pauseTapped : .playTapped)
             } label: {
                 if store.playerState.isLoading {
                     ProgressView()
@@ -141,14 +143,14 @@ struct AudioPlayerView: View {
             }
 
             Button {
-                store.send(.seekForwardTapped)
+                send(.seekForwardTapped)
             } label: {
                 Image(systemName: "goforward.10")
                     .font(.system(size: 26, weight: .medium))
             }
 
             Button {
-                store.send(.nextKeyPointTapped)
+                send(.nextKeyPointTapped)
             } label:  {
                 Image(systemName: "forward.end")
                     .font(.system(size: 26, weight: .medium))
@@ -161,10 +163,10 @@ struct AudioPlayerView: View {
     }
 
     private var textAudioToggleView: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: Constants.smallPadding) {
             Image(systemName: "text.alignleft")
                 .font(.system(size: 16, weight: .bold))
-                .padding(8)
+                .padding(Constants.smallPadding)
 
             Image(systemName: "headphones")
                 .font(.system(size: 16, weight: .bold))
@@ -183,36 +185,6 @@ struct AudioPlayerView: View {
 
 }
 
-private extension AudioPlayerView {
-
-    enum Constants {
-        static let largePadding: CGFloat = 32
-        static let padding: CGFloat = 16
-    }
-
-}
-
-#Preview {
-
-    AudioPlayerView(store: Store(
-        initialState: AudioPlayerFeature.State(currentKeyPointID: Summary.zeroToOne.keyPoints.first!.id),
-        reducer: {
-            AudioPlayerFeature()
-        }
-    ))
-
-}
-
-extension Float64 {
-
-    var formattedTime: String {
-        let minutes = Int(self) / 60
-        let remainingSeconds = Int(self) % 60
-        return String(format: "%02d:%02d", minutes, remainingSeconds)
-    }
-
-}
-
 private extension AudioPlayerFeature.State {
 
     var currentKeyPoint: Summary.KeyPoint? {
@@ -226,5 +198,27 @@ private extension AudioPlayerFeature.State {
     var currentKeyPointOrderNumberUIValue: Int {
         currentKeyPointOrderNumber + 1
     }
+
+}
+
+
+private extension AudioPlayerView {
+
+    enum Constants {
+        static let largePadding: CGFloat = 32
+        static let padding: CGFloat = 16
+        static let smallPadding: CGFloat = 8
+    }
+
+}
+
+#Preview {
+
+    AudioPlayerView(store: Store(
+        initialState: AudioPlayerFeature.State(currentKeyPointID: Summary.zeroToOne.keyPoints.first!.id),
+        reducer: {
+            AudioPlayerFeature()
+        }
+    ))
 
 }
