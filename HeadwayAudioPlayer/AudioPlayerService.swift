@@ -140,6 +140,8 @@ extension AudioPlayerService {
             player.pause()
         }
 
+//        func stop
+
         func setRate(rate: Float) {
             player.rate = rate
         }

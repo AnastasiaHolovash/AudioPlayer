@@ -14,7 +14,7 @@ struct HeadwayAudioPlayerApp: App {
     var body: some Scene {
         WindowGroup {
             AudioPlayerView(store: Store(
-                initialState: AudioPlayerFeature.State(currentKeyPoint: Summary.zeroToOne.keyPoints.first!),
+                initialState: AudioPlayerFeature.State(currentKeyPointID: Summary.zeroToOne.keyPoints.first!.id),
                 reducer: {
                     AudioPlayerFeature()
                 }

@@ -56,14 +56,16 @@ struct AudioPlayerView: View {
             }
 
             VStack(spacing: 16) {
-                Text("Key point \(store.currentKeyPoint.orderNumber + 1) of \(store.summary.keyPoints.count)".uppercased())
+                Text("Key point \(store.currentKeyPointOrderNumberUIValue) of \(store.summary.keyPoints.count)".uppercased())
                     .font(.subheadline)
                     .kerning(1)
                     .fontWeight(.semibold)
                     .foregroundColor(.gray)
 
-                Text(store.currentKeyPoint.title)
-                    .multilineTextAlignment(.center)
+                if let currentKeyPoint = store.currentKeyPoint {
+                    Text(currentKeyPoint.title)
+                        .multilineTextAlignment(.center)
+                }
             }
         }
     }
@@ -84,6 +86,7 @@ struct AudioPlayerView: View {
                         store.send(.setIsEditing(isEditing))
                     }
                     .animation(.easeIn, value: store.currentSeconds)
+                    .allowsHitTesting(store.playerState.hasProgress)
 
                     Text(store.playerState.progress.totalSeconds.formattedTime)
                         .font(.caption)
@@ -117,7 +120,7 @@ struct AudioPlayerView: View {
                 Image(systemName: "backward.end")
                     .font(.system(size: 26, weight: .medium))
             }
-            .disabled(store.currentKeyPoint.orderNumber == .zero)
+            .disabled(store.currentKeyPointOrderNumber == .zero)
 
             Button {
                 store.send(.seekBackwardTapped)
@@ -150,7 +153,7 @@ struct AudioPlayerView: View {
                 Image(systemName: "forward.end")
                     .font(.system(size: 26, weight: .medium))
             }
-            .disabled(store.currentKeyPoint.orderNumber + 1 == store.currentKeyPoint.totalKeyPointsNumber)
+            .disabled(store.currentKeyPointOrderNumber == store.summary.lastKeyPointOrderNumber)
         }
         .buttonStyle(PlayerButtonStyle())
         .foregroundColor(.primary)
@@ -192,7 +195,7 @@ private extension AudioPlayerView {
 #Preview {
 
     AudioPlayerView(store: Store(
-        initialState: AudioPlayerFeature.State(currentKeyPoint: Summary.zeroToOne.keyPoints.first!),
+        initialState: AudioPlayerFeature.State(currentKeyPointID: Summary.zeroToOne.keyPoints.first!.id),
         reducer: {
             AudioPlayerFeature()
         }
@@ -206,6 +209,22 @@ extension Float64 {
         let minutes = Int(self) / 60
         let remainingSeconds = Int(self) % 60
         return String(format: "%02d:%02d", minutes, remainingSeconds)
+    }
+
+}
+
+private extension AudioPlayerFeature.State {
+
+    var currentKeyPoint: Summary.KeyPoint? {
+        summary.keyPoints[id: currentKeyPointID]
+    }
+
+    var currentKeyPointOrderNumber: Int {
+        currentKeyPoint?.orderNumber ?? .zero
+    }
+
+    var currentKeyPointOrderNumberUIValue: Int {
+        currentKeyPointOrderNumber + 1
     }
 
 }

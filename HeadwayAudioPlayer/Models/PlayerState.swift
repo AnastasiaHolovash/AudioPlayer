@@ -66,9 +66,23 @@ extension PlayerState {
              .loading,
              .failed:
             PlayerProgress(
-                totalSeconds: .zero,
+                totalSeconds: 1,
                 currentSeconds: .zero
             )
         }
     }
+
+    var hasProgress: Bool {
+        switch self {
+        case .playing,
+             .paused:
+            true
+
+        case .idle,
+             .loading,
+             .failed:
+            false
+        }
+    }
+    
 }

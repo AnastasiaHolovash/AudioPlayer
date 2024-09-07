@@ -19,7 +19,7 @@ struct AudioPlayerFeature {
     @ObservableState
     struct State {
         let summary = Summary.zeroToOne
-        var currentKeyPoint: Summary.KeyPoint
+        var currentKeyPointID: Int
         var playerState: PlayerState = .idle
         var playbackSpeed: Float = 1
         var currentSeconds: Float64 = .zero
@@ -49,6 +49,7 @@ struct AudioPlayerFeature {
         Reduce<State, Action> { state, action in
             switch action {
             case .playTapped:
+                print("--- state.playerState.isPaused: \(state.playerState.isPaused)")
                 if state.playerState.isPaused {
                     audioPlayerService.resume()
                     return .none
@@ -80,20 +81,34 @@ struct AudioPlayerFeature {
                 }
             
             case .nextKeyPointTapped:
-                guard state.currentKeyPoint.orderNumber < state.summary.keyPoints.count - 1 else {
+                guard let newKeyPointID = state.summary.keyPointID(nextTo: state.currentKeyPointID) else {
                     return .none
                 }
 
-                state.currentKeyPoint = state.summary.keyPoints[state.currentKeyPoint.orderNumber + 1]
-                return startPlaying(state: &state)
+                state.currentKeyPointID = newKeyPointID
+
+                if state.playerState.isPlaying {
+                    return startPlaying(state: &state)
+                } else {
+                    state.playerState = .idle
+                    state.currentSeconds = .zero
+                    return .cancel(id: CancelID.audioPlayer)
+                }
 
             case .previousKeyPointTapped:
-                guard state.currentKeyPoint.orderNumber > 0 else {
+                guard let newKeyPointID = state.summary.keyPointID(previousTo: state.currentKeyPointID) else {
                     return .none
                 }
 
-                state.currentKeyPoint = state.summary.keyPoints[state.currentKeyPoint.orderNumber - 1]
-                return startPlaying(state: &state)
+                state.currentKeyPointID = newKeyPointID
+
+                if state.playerState.isPlaying {
+                    return startPlaying(state: &state)
+                } else {
+                    state.playerState = .idle
+                    state.currentSeconds = .zero
+                    return .cancel(id: CancelID.audioPlayer)
+                }
 
             case let .speedSelected(speed):
                 state.playbackSpeed = speed
@@ -134,17 +149,20 @@ struct AudioPlayerFeature {
     }
 
     private func startPlaying(state: inout State) -> Effect<Action> {
-        guard let audioURL = state.currentKeyPoint.audioURL else {
+        guard let audioURL = state.summary.keyPoints[id: state.currentKeyPointID]?.audioURL else {
             reportIssue("Invalid audio UR")
             return .none
         }
 
         return .run { send in
             for await playerState in audioPlayerService.play(url: audioURL) {
-                print("!!! changed \(playerState)")
                 await send(.setPlayerState(playerState))
             }
         }
+        .cancellable(id: CancelID.audioPlayer, cancelInFlight: true)
     }
 
+    enum CancelID {
+        case audioPlayer
+    }
 }
