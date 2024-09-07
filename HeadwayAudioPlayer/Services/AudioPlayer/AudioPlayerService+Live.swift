@@ -136,16 +136,9 @@ extension AudioPlayerService {
         }
 
         private func setupSession() {
-            let options: AVAudioSession.CategoryOptions = [
-                .allowAirPlay,
-                .allowBluetooth,
-                .allowBluetoothA2DP,
-                .duckOthers,
-                .interruptSpokenAudioAndMixWithOthers
-            ]
             let session = AVAudioSession.sharedInstance()
             do {
-                try session.setCategory(.playback, options: options)
+                try session.setCategory(.playback, options: [])
             } catch {
                 reportIssue(error)
             }
