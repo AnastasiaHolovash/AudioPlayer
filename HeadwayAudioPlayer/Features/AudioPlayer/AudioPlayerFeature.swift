@@ -102,16 +102,10 @@ private extension AudioPlayerFeature {
             }
 
         case .nextKeyPointTapped:
-            guard let newKeyPointID = state.summary.keyPointID(nextTo: state.currentKeyPointID) else {
-                return .none
-            }
-            return handleNewKeyPointID(state: &state, newKeyPointID: newKeyPointID)
+            return switchToNextKeyPointID(state: &state)
 
         case .previousKeyPointTapped:
-            guard let newKeyPointID = state.summary.keyPointID(previousTo: state.currentKeyPointID) else {
-                return .none
-            }
-            return handleNewKeyPointID(state: &state, newKeyPointID: newKeyPointID)
+            return switchToPreviousKeyPointID(state: &state)
 
         case .playbackSpeedTapped:
             state.destination = .playbackSpeed
@@ -144,7 +138,11 @@ private extension AudioPlayerFeature {
             if !state.isCurrentSecondsEditing {
                 state.currentSeconds = playerState.progress.currentSeconds
             }
-            return .none
+            if playerState.isFinished {
+                return switchToNextKeyPointID(state: &state)
+            } else {
+                return .none
+            }
 
         case .seekEnded:
             state.isCurrentSecondsEditing = false
@@ -152,10 +150,24 @@ private extension AudioPlayerFeature {
         }
     }
 
+    func switchToNextKeyPointID(state: inout State) -> Effect<Action> {
+        guard let newKeyPointID = state.summary.keyPointID(nextTo: state.currentKeyPointID) else {
+            return .none
+        }
+        return handleNewKeyPointID(state: &state, newKeyPointID: newKeyPointID)
+    }
+
+    func switchToPreviousKeyPointID(state: inout State) -> Effect<Action> {
+        guard let newKeyPointID = state.summary.keyPointID(previousTo: state.currentKeyPointID) else {
+            return .none
+        }
+        return handleNewKeyPointID(state: &state, newKeyPointID: newKeyPointID)
+    }
+
     func handleNewKeyPointID(state: inout State, newKeyPointID: Int) -> Effect<Action> {
         state.currentKeyPointID = newKeyPointID
 
-        if state.playerState.isPlaying {
+        if state.playerState.isPlaying || state.playerState.isFinished {
             return startPlaying(state: &state)
         } else {
             state.playerState = .idle

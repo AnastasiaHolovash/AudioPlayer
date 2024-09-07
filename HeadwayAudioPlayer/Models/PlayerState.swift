@@ -14,7 +14,7 @@ enum PlayerState {
     case loading
     case playing(PlayerProgress)
     case paused(PlayerProgress)
-    case failed
+    case finished
 }
 
 extension PlayerState {
@@ -31,6 +31,10 @@ extension PlayerState {
         self.is(\.loading)
     }
 
+    var isFinished: Bool {
+        self.is(\.finished)
+    }
+
     var progress: PlayerProgress {
         switch self {
         case let .playing(progress),
@@ -39,7 +43,7 @@ extension PlayerState {
 
         case .idle,
              .loading,
-             .failed:
+             .finished:
             PlayerProgress(
                 totalSeconds: 1,
                 currentSeconds: .zero

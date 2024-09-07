@@ -7,6 +7,7 @@
 
 import AVFoundation
 import IssueReporting
+import ConcurrencyExtras
 
 extension AudioPlayerService {
 
@@ -26,10 +27,8 @@ extension AudioPlayerService {
 extension AudioPlayerService {
 
     final class LiveHelper: NSObject {
-        private var player = AVPlayer()
-        private var playerItem: AVPlayerItem?
-        private var progressObserver: Any?
-        private var currentRate: Float?
+        private let player = AVPlayer()
+        private let currentRate: LockIsolated<Float> = LockIsolated(1)
         private var continuation: AsyncStream<PlayerState>.Continuation?
 
         func play(url: URL) -> AsyncStream<PlayerState> {
@@ -41,67 +40,68 @@ extension AudioPlayerService {
             setupSession()
             let (stream, newContinuation) = AsyncStream<PlayerState>.makeStream()
             continuation = newContinuation
-            playerItem = AVPlayerItem(url: url)
+            let playerItem = AVPlayerItem(url: url)
             player.replaceCurrentItem(with: playerItem)
             player.seek(to: .zero)
 
             newContinuation.yield(.loading)
 
             let task = Task {
-                do {
-                    try await player.readyToPlay()
-                    await player.play()
-                    await MainActor.run {
-                        player.rate = currentRate ?? 1
-                    }
-                    await withTaskGroup(of: Void.self) { group in
-                        group.addTask {
-                            for await value in self.player.periodicTimeUpdates {
-                                guard let state = self.buildState(
-                                    duration: value.duration,
-                                    time: value.time,
-                                    controlStatus: self.player.controlStatus
-                                ) else {
-                                    return
-                                }
-
-                                newContinuation.yield(state)
-                            }
-                        }
-                        group.addTask {
-                            for await value in self.player.statusUpdates {
-                                guard let currentItemProgress = self.player.currentItemProgress,
-                                      let state = self.buildState(
-                                        duration: currentItemProgress.duration,
-                                        time: currentItemProgress.time,
-                                        controlStatus: value
-                                    )
-                                else {
-                                    return
-                                }
-
-                                newContinuation.yield(state)
-                            }
-                        }
-                        group.addTask {
-                            let notificationCenter = NotificationCenter.default
-                            let didPlayToEnd = AVPlayerItem.didPlayToEndTimeNotification
-                            _ = await notificationCenter.notifications(named: didPlayToEnd).makeAsyncIterator().next()
-                        }
-                        group.addTask {
-                            let notificationCenter = NotificationCenter.default
-                            let didPlayToEnd = AVPlayerItem.failedToPlayToEndTimeNotification
-                            _ = await notificationCenter.notifications(named: didPlayToEnd).makeAsyncIterator().next()
-                        }
-                        await group.first(where: { true })
-                    }
-                    newContinuation.yield(.idle)
-                    newContinuation.finish()
-                } catch {
-                    reportIssue(error)
-                    newContinuation.yield(.failed)
-                    newContinuation.finish()
+                await player.play()
+                await MainActor.run {
+                    player.rate = currentRate.value
                 }
+                let result = await withTaskGroup(of: Bool.self) { group in
+                    group.addTask {
+                        for await value in self.player.periodicTimeUpdates {
+                            guard let state = self.buildState(
+                                duration: value.duration,
+                                time: value.time,
+                                controlStatus: self.player.controlStatus
+                            ) else {
+                                continue
+                            }
+
+                            newContinuation.yield(state)
+                        }
+                        return true
+                    }
+                    group.addTask {
+                        for await value in self.player.statusUpdates {
+                            guard let currentItemProgress = self.player.currentItemProgress,
+                                  let state = self.buildState(
+                                    duration: currentItemProgress.duration,
+                                    time: currentItemProgress.time,
+                                    controlStatus: value
+                                )
+                            else {
+                                continue
+                            }
+
+                            newContinuation.yield(state)
+                        }
+                        return true
+                    }
+                    group.addTask {
+                        _ = await NotificationCenter.default
+                            .notifications(named: AVPlayerItem.didPlayToEndTimeNotification)
+                            .makeAsyncIterator()
+                            .next()
+                        return true
+                    }
+                    group.addTask {
+                        _ = await NotificationCenter.default
+                            .notifications(named: AVPlayerItem.failedToPlayToEndTimeNotification)
+                            .makeAsyncIterator()
+                            .next()
+                        return false
+                    }
+
+                    defer { group.cancelAll() }
+                    return await group.next() ?? false
+                }
+                newContinuation.yield(result ? .finished : .idle)
+                newContinuation.finish()
             }
             newContinuation.onTermination = { [weak self] _ in
                 task.cancel()
@@ -114,7 +114,7 @@ extension AudioPlayerService {
 
         func resume() {
             player.play()
-            player.rate = currentRate ?? 1
+            player.rate = currentRate.value
         }
 
         func pause() {
@@ -122,7 +122,7 @@ extension AudioPlayerService {
         }
 
         func setRate(rate: Float) {
-            currentRate = rate
+            currentRate.setValue(rate)
             player.rate = rate
         }
 
@@ -212,32 +212,6 @@ private extension AVPlayer {
         return stream
     }
     
-}
-
-private extension AVPlayer {
-
-    enum FeetureAVPlayerError: Error {
-        case failedToStartAudio
-    }
-
-    func readyToPlay() async throws {
-        try await withCheckedThrowingContinuation { continuation in
-            let observer = currentItem?.observe(\.status) { [weak self] _, _ in
-                self?.checkPlayerAndItemReady(continuation: continuation)
-            }
-            continuation.resume(returning: ())
-            observer?.invalidate()
-        }
-    }
-
-    private func checkPlayerAndItemReady(continuation: CheckedContinuation<Void, Error>) {
-        if currentItem?.status == .readyToPlay {
-            continuation.resume()
-        } else {
-            continuation.resume(throwing: FeetureAVPlayerError.failedToStartAudio)
-        }
-    }
-
 }
 
 private extension AVPlayer {
