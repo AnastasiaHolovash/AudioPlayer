@@ -6,21 +6,65 @@
 //
 
 import SwiftUI
+import IssueReporting
 
-struct BottomSheetView: View {
+extension View {
+
+    func bottomSheet<Value, ContentView: View>(
+        _ item: Binding<Value?>,
+        contentView: @escaping (Value) -> ContentView
+    ) -> some View {
+        self
+            .overlay {
+                if let value = item.wrappedValue {
+                    BottomSheetView(
+                        isPresented: Binding(item),
+                        contentView: contentView(value)
+                    )
+                } else {
+                    EmptyView()
+                }
+            }
+    }
+
+}
+
+struct BottomSheetDismiss {
+
+    var dismiss: () -> Void
+
+    func callAsFunction() {
+        dismiss()
+    }
+
+}
+
+extension EnvironmentValues {
+
+    var bottomSheetDismiss: BottomSheetDismiss {
+        get { self[BottomSheetDismissKey.self] }
+        set { self[BottomSheetDismissKey.self] = newValue }
+    }
+
+    private struct BottomSheetDismissKey: EnvironmentKey {
+        static let defaultValue = BottomSheetDismiss { reportIssue("Can't dismiss bottom sheet") }
+    }
+
+}
+
+private struct BottomSheetView<ContentView: View>: View {
 
     @State private var bottomSheetIsVisible = false
     @State private var dragOffset = CGFloat.zero
-
     @Binding private var isPresented: Bool
-    @Binding private var playbackSpeed: Float
+    private var contentView: ContentView
 
     init(
-        playbackSpeed: Binding<Float>,
-        isPresented: Binding<Bool>
+        isPresented: Binding<Bool>,
+        contentView: ContentView
     ) {
         self._isPresented = isPresented
-        self._playbackSpeed = playbackSpeed
+        self.contentView = contentView
     }
 
     var body: some View {
@@ -29,9 +73,8 @@ struct BottomSheetView: View {
                 backgroundView
                     .zIndex(1)
 
-                contentView
+                mainView
                     .zIndex(2)
-
             }
         }
         .ignoresSafeArea()
@@ -40,33 +83,32 @@ struct BottomSheetView: View {
         }
     }
 
-    private var contentView: some View {
-        PlaybackSpeedView(
-            playbackSpeed: $playbackSpeed,
-            continueTapped: { animatedDisappear() }
-        )
-        .transition(.move(edge: .bottom))
-        .offset(y: dragOffset)
-        .gesture(DragGesture()
-            .onChanged { value in
-                if value.translation.height > 0 {
-                    dragOffset = value.translation.height
-                }
-            }
-            .onEnded { value in
-                if value.translation.height > 50 {
-                    animatedDisappear()
-                } else {
-                    withAnimation {
-                        dragOffset = 0
+    private var mainView: some View {
+        contentView
+            .environment(\.bottomSheetDismiss, BottomSheetDismiss(dismiss: animatedDisappear))
+            .transition(.move(edge: .bottom))
+            .offset(y: dragOffset)
+            .gesture(DragGesture()
+                .onChanged { value in
+                    if value.translation.height > 0 {
+                        dragOffset = value.translation.height
                     }
                 }
+                .onEnded { value in
+                    if value.translation.height > 50 {
+                        animatedDisappear()
+                    } else {
+                        withAnimation {
+                            dragOffset = 0
+                        }
+                    }
+                }
+            )
+            .onDisappear {
+                isPresented = false
             }
-        )
-        .onDisappear {
-            isPresented = false
-        }
     }
+
     private var backgroundView: some View {
         Color(.black)
             .opacity(0.15)
@@ -93,11 +135,4 @@ struct BottomSheetView: View {
         }
     }
 
-}
-
-#Preview {
-    BottomSheetView(
-        playbackSpeed: .constant(1),
-        isPresented: .constant(true)
-    )
 }

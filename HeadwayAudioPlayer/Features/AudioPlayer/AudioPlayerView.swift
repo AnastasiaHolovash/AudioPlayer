@@ -15,24 +15,19 @@ struct AudioPlayerView: View {
 
     var body: some View {
         WithPerceptionTracking {
-            VStack(spacing: Constants.largePadding) {
+            VStack(spacing: .zero) {
                 headerView
-                
+
                 playerView
-                
+
                 Spacer(minLength: .zero)
                 
                 textAudioToggleView
             }
             .padding()
             .background(Color.playerBackground)
-            .overlay {
-                if store.destination?.playbackSpeed != nil {
-                    BottomSheetView(
-                        playbackSpeed: $store.playbackSpeed,
-                        isPresented: Binding($store.destination.playbackSpeed)
-                    )
-                }
+            .bottomSheet($store.destination.playbackSpeed) {
+                PlaybackSpeedView(playbackSpeed: $store.playbackSpeed)
             }
         }
     }
@@ -46,7 +41,7 @@ struct AudioPlayerView: View {
                 Color.gray
             }
             .aspectRatio(2/3, contentMode: .fit)
-            .frame(height: 300)
+            .frame(height: UIScreen.main.bounds.height > 700 ? 300 : 200)
             .clipShape(RoundedRectangle(cornerRadius: 8))
             .overlay {
                 RoundedRectangle(cornerRadius: 8)
@@ -89,6 +84,7 @@ struct AudioPlayerView: View {
 
             playbackControlsView
         }
+        .padding(.vertical, Constants.largePadding)
     }
 
     private var sliderView: some View {

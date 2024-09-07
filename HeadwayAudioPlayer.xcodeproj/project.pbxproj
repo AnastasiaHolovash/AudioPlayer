@@ -94,8 +94,6 @@
 			isa = PBXGroup;
 			children = (
 				557D25A42C89113D006367EF /* BottomSheetView.swift */,
-				557D25B12C89CF82006367EF /* SpeedButton.swift */,
-				557D25AB2C89C8C7006367EF /* PlaybackSpeedView.swift */,
 			);
 			path = BottomSheet;
 			sourceTree = "<group>";
@@ -130,6 +128,7 @@
 			isa = PBXGroup;
 			children = (
 				55C450542C8C6BB8002FF65A /* AudioPlayer */,
+				55C4505A2C8CA66F002FF65A /* PlaybackSpeed */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -160,6 +159,15 @@
 				55C450502C8C65A9002FF65A /* AudioPlayerService+Live.swift */,
 			);
 			path = AudioPlayer;
+			sourceTree = "<group>";
+		};
+		55C4505A2C8CA66F002FF65A /* PlaybackSpeed */ = {
+			isa = PBXGroup;
+			children = (
+				557D25B12C89CF82006367EF /* SpeedButton.swift */,
+				557D25AB2C89C8C7006367EF /* PlaybackSpeedView.swift */,
+			);
+			path = PlaybackSpeed;
 			sourceTree = "<group>";
 		};
 		55C7C4022C88D51200A78DFF = {
