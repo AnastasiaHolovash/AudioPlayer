@@ -13,6 +13,7 @@ struct Summary {
 
     struct KeyPoint {
         let orderNumber: Int
+        let totalKeyPointsNumber: Int
         let title: String
         let audioURL: URL?
     }
@@ -25,41 +26,49 @@ extension Summary {
         keyPoints: [
             KeyPoint(
                 orderNumber: 0,
+                totalKeyPointsNumber: 8,
                 title: "Be unique to conquer the market",
                 audioURL: URL(string: "https://static.get-headway.com/audio%2F3182022704394b4587ab%2FPatrick%2F0_1707208816_en.mp3")
             ),
             KeyPoint(
                 orderNumber: 1,
+                totalKeyPointsNumber: 8,
                 title: "The competition trap",
                 audioURL: URL(string: "https://static.get-headway.com/audio%2F3182022704394b4587ab%2FPatrick%2F1_1707208816_en.mp3")
             ),
             KeyPoint(
                 orderNumber: 2,
+                totalKeyPointsNumber: 8,
                 title: "Find a way to control the market",
                 audioURL: URL(string: "https://static.get-headway.com/audio%2F3182022704394b4587ab%2FPatrick%2F2_1707208816_en.mp3")
             ),
             KeyPoint(
                 orderNumber: 3,
+                totalKeyPointsNumber: 8,
                 title: "Realize the danger of indefinite optimism",
                 audioURL: URL(string: "https://static.get-headway.com/audio%2F3182022704394b4587ab%2FPatrick%2F3_1707208816_en.mp3")
             ),
             KeyPoint(
                 orderNumber: 4,
+                totalKeyPointsNumber: 8,
                 title: "Secure a solid foundation for your startup",
                 audioURL: URL(string: "https://static.get-headway.com/audio%2F3182022704394b4587ab%2FPatrick%2F4_1707208816_en.mp3")
             ),
             KeyPoint(
                 orderNumber: 5,
+                totalKeyPointsNumber: 8,
                 title: "Remember: you have to sell",
                 audioURL: URL(string: "https://static.get-headway.com/audio%2F3182022704394b4587ab%2FPatrick%2F5_1707208816_en.mp3")
             ),
             KeyPoint(
                 orderNumber: 6,
+                totalKeyPointsNumber: 8,
                 title: "Combine technology and human effort",
                 audioURL: URL(string: "https://static.get-headway.com/audio%2F3182022704394b4587ab%2FPatrick%2F6_1707208816_en.mp3")
             ),
             KeyPoint(
                 orderNumber: 7,
+                totalKeyPointsNumber: 8,
                 title: "Conclusion",
                 audioURL: URL(string: "https://static.get-headway.com/audio%2F3182022704394b4587ab%2FPatrick%2F7_1707208816_en.mp3")
             )

@@ -9,6 +9,8 @@ import SwiftUI
 
 struct PlayerButtonStyle: ButtonStyle {
 
+    @Environment(\.isEnabled) var isEnabled
+
     func makeBody(configuration: Configuration) -> some View {
         ZStack {
             Circle()
@@ -18,6 +20,7 @@ struct PlayerButtonStyle: ButtonStyle {
                 )
 
             configuration.label
+                .opacity(isEnabled ? 1 : 0.5)
                 .animation(nil, value: configuration.isPressed)
         }
         .frame(width: 56, height: 56)

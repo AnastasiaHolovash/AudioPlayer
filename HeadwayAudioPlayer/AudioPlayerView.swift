@@ -70,30 +70,30 @@ struct AudioPlayerView: View {
 
     private var playerView: some View {
         VStack(spacing: .zero) {
-            VStack(spacing: 16) {
+            VStack(spacing: 8) {
                 HStack {
+                    Text(store.playerState.progress.currentSeconds.formattedTime)
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                        .frame(width: 40)
+
                     Slider(
                         value: $store.currentSeconds,
                         in: 0...store.playerState.progress.totalSeconds
-                    ) {
-                        EmptyView()
-                    } minimumValueLabel: {
-                        Text(store.playerState.progress.currentSeconds.formattedTime)
-                            .font(.caption)
-                            .foregroundColor(.gray)
-                    } maximumValueLabel: {
-                        Text(store.playerState.progress.totalSeconds.formattedTime)
-                            .font(.caption)
-                            .foregroundColor(.gray)
-                    } onEditingChanged: { isEditing in
+                    ) { isEditing in
                         store.send(.setIsEditing(isEditing))
                     }
                     .animation(.easeIn, value: store.currentSeconds)
+
+                    Text(store.playerState.progress.totalSeconds.formattedTime)
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                        .frame(width: 40)
                 }
 
-                Button(action: {
+                Button {
                     isPresented = true
-                }) {
+                } label: {
                     Text(String(format: "%.1fx speed", store.playbackSpeed))
                         .font(.subheadline)
                         .foregroundStyle(Color.black)
@@ -117,6 +117,7 @@ struct AudioPlayerView: View {
                 Image(systemName: "backward.end")
                     .font(.system(size: 26, weight: .medium))
             }
+            .disabled(store.currentKeyPoint.orderNumber == .zero)
 
             Button {
                 store.send(.seekBackwardTapped)
@@ -149,6 +150,7 @@ struct AudioPlayerView: View {
                 Image(systemName: "forward.end")
                     .font(.system(size: 26, weight: .medium))
             }
+            .disabled(store.currentKeyPoint.orderNumber + 1 == store.currentKeyPoint.totalKeyPointsNumber)
         }
         .buttonStyle(PlayerButtonStyle())
         .foregroundColor(.primary)
