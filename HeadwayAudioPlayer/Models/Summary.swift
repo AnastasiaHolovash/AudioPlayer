@@ -35,7 +35,7 @@ extension Summary {
 
     func keyPointID(nextTo id: Int) -> Int? {
         guard let index = keyPoints.index(id: id),
-              index < keyPoints.endIndex
+              index < keyPoints.endIndex - 1
         else {
             return nil
         }
