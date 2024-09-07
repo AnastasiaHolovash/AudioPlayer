@@ -43,7 +43,7 @@ struct PlaybackSpeedView: View {
                     .font(.title)
                     .fontWeight(.bold)
                     .kerning(1)
-                    .foregroundStyle(.blue)
+                    .foregroundStyle(.playerBlue)
                     .frame(width: 65)
                     .modify { view in
                         if #available(iOS 16.0, *) {
@@ -84,7 +84,7 @@ struct PlaybackSpeedView: View {
                     .font(.headline)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.blue)
+                    .background(Color.playerBlue)
                     .cornerRadius(10)
             }
         }
@@ -101,7 +101,7 @@ struct PlaybackSpeedView: View {
     private var sliderView: some View {
         VStack(spacing: .zero) {
             Slider(value: $playbackSpeed, in: 0.5...2, step: 0.1)
-                .accentColor(.blue)
+                .accentColor(.playerBlue)
                 .padding(.horizontal, 8)
 
             HStack {

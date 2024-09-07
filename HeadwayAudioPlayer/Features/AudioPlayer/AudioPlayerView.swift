@@ -25,7 +25,7 @@ struct AudioPlayerView: View {
                 textAudioToggleView
             }
             .padding()
-            .background(Color.gray.opacity(0.1))
+            .background(Color.playerBackground)
             .overlay {
                 if store.destination?.playbackSpeed != nil {
                     BottomSheetView(
@@ -78,10 +78,10 @@ struct AudioPlayerView: View {
                     send(.playbackSpeedTapped)
                 } label: {
                     Text(String(format: "%.1fx speed", store.playbackSpeed))
-                        .font(.system(size: 10, weight: .bold))
+                        .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(Color.black)
                         .padding(Constants.smallPadding)
-                        .background(Color(.systemGray5))
+                        .background(Color.lightGray)
                         .cornerRadius(4)
                 }
             }
@@ -104,6 +104,7 @@ struct AudioPlayerView: View {
             ) { isEditing in
                 send(.setIsEditing(isEditing))
             }
+            .tint(.playerBlue)
             .animation(.easeIn, value: store.currentSeconds)
             .allowsHitTesting(store.playerState.hasProgress)
 
@@ -171,7 +172,7 @@ struct AudioPlayerView: View {
             Image(systemName: "headphones")
                 .font(.system(size: 16, weight: .bold))
                 .padding(12)
-                .background(Color.blue)
+                .background(Color.playerBlue)
                 .clipShape(Circle())
                 .foregroundColor(.white)
         }
