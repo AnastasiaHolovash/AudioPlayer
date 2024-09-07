@@ -21,7 +21,6 @@
 		557D25B22C89CF82006367EF /* SpeedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557D25B12C89CF82006367EF /* SpeedButton.swift */; };
 		55C4504D2C8C64BC002FF65A /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C4504C2C8C64BC002FF65A /* ViewExtensions.swift */; };
 		55C450512C8C65A9002FF65A /* AudioPlayerService+Live.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C450502C8C65A9002FF65A /* AudioPlayerService+Live.swift */; };
-		55C450572C8C98AF002FF65A /* AppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C450562C8C98AF002FF65A /* AppConstants.swift */; };
 		55C450592C8C98E0002FF65A /* DoubleExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C450582C8C98E0002FF65A /* DoubleExtensions.swift */; };
 		55C7C40F2C88D51200A78DFF /* HeadwayAudioPlayerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C7C40E2C88D51200A78DFF /* HeadwayAudioPlayerApp.swift */; };
 		55C7C4112C88D51200A78DFF /* AudioPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C7C4102C88D51200A78DFF /* AudioPlayerView.swift */; };
@@ -43,7 +42,6 @@
 		55C450452C8C5CD7002FF65A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		55C4504C2C8C64BC002FF65A /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		55C450502C8C65A9002FF65A /* AudioPlayerService+Live.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudioPlayerService+Live.swift"; sourceTree = "<group>"; };
-		55C450562C8C98AF002FF65A /* AppConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConstants.swift; sourceTree = "<group>"; };
 		55C450582C8C98E0002FF65A /* DoubleExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubleExtensions.swift; sourceTree = "<group>"; };
 		55C7C40B2C88D51200A78DFF /* HeadwayAudioPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HeadwayAudioPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55C7C40E2C88D51200A78DFF /* HeadwayAudioPlayerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadwayAudioPlayerApp.swift; sourceTree = "<group>"; };
@@ -190,7 +188,6 @@
 			isa = PBXGroup;
 			children = (
 				55C7C40E2C88D51200A78DFF /* HeadwayAudioPlayerApp.swift */,
-				55C450562C8C98AF002FF65A /* AppConstants.swift */,
 				55C450522C8C6AD1002FF65A /* Features */,
 				55C4504F2C8C6519002FF65A /* Services */,
 				5517E3112C8A52B1008F2599 /* Models */,
@@ -287,7 +284,6 @@
 				55C4504D2C8C64BC002FF65A /* ViewExtensions.swift in Sources */,
 				557D25A92C89BD83006367EF /* SpeedControlButtonStyle.swift in Sources */,
 				557D25A52C89113D006367EF /* BottomSheetView.swift in Sources */,
-				55C450572C8C98AF002FF65A /* AppConstants.swift in Sources */,
 				55C450592C8C98E0002FF65A /* DoubleExtensions.swift in Sources */,
 				55C450512C8C65A9002FF65A /* AudioPlayerService+Live.swift in Sources */,
 				5517E3152C8A52CA008F2599 /* PlayerProgress.swift in Sources */,

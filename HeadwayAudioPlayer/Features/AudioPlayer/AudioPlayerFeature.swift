@@ -85,7 +85,7 @@ private extension AudioPlayerFeature {
             return .none
 
         case .seekForwardTapped:
-            let currentSecondsAfterChange = state.currentSeconds + AppConstants.seekForwardSeconds
+            let currentSecondsAfterChange = state.currentSeconds + Constants.seekForwardSeconds
             let secondsToSeekTo = currentSecondsAfterChange >= state.playerState.progress.totalSeconds
             ? state.playerState.progress.totalSeconds
             : currentSecondsAfterChange
@@ -94,7 +94,7 @@ private extension AudioPlayerFeature {
             }
 
         case .seekBackwardTapped:
-            let currentSecondsAfterChange = state.currentSeconds - AppConstants.seekBackwardSeconds
+            let currentSecondsAfterChange = state.currentSeconds - Constants.seekBackwardSeconds
             let secondsToSeekTo = currentSecondsAfterChange <= .zero
             ? .zero
             : currentSecondsAfterChange
@@ -186,5 +186,10 @@ private extension AudioPlayerFeature {
 
     enum CancelID {
         case audioPlayer
+    }
+
+    enum Constants {
+        static let seekForwardSeconds: Double = 10
+        static let seekBackwardSeconds: Double = 5
     }
 }
