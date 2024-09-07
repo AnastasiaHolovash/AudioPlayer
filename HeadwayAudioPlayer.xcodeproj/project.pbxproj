@@ -19,6 +19,7 @@
 		557D25AC2C89C8C7006367EF /* PlaybackSpeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557D25AB2C89C8C7006367EF /* PlaybackSpeedView.swift */; };
 		557D25AF2C89CEF3006367EF /* RoundedCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557D25AE2C89CEF3006367EF /* RoundedCorner.swift */; };
 		557D25B22C89CF82006367EF /* SpeedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557D25B12C89CF82006367EF /* SpeedButton.swift */; };
+		55C4504D2C8C64BC002FF65A /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C4504C2C8C64BC002FF65A /* ViewExtensions.swift */; };
 		55C7C40F2C88D51200A78DFF /* HeadwayAudioPlayerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C7C40E2C88D51200A78DFF /* HeadwayAudioPlayerApp.swift */; };
 		55C7C4112C88D51200A78DFF /* AudioPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C7C4102C88D51200A78DFF /* AudioPlayerView.swift */; };
 		55C7C4132C88D51400A78DFF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55C7C4122C88D51400A78DFF /* Assets.xcassets */; };
@@ -37,6 +38,8 @@
 		557D25AB2C89C8C7006367EF /* PlaybackSpeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackSpeedView.swift; sourceTree = "<group>"; };
 		557D25AE2C89CEF3006367EF /* RoundedCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedCorner.swift; sourceTree = "<group>"; };
 		557D25B12C89CF82006367EF /* SpeedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedButton.swift; sourceTree = "<group>"; };
+		55C450452C8C5CD7002FF65A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		55C4504C2C8C64BC002FF65A /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		55C7C40B2C88D51200A78DFF /* HeadwayAudioPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HeadwayAudioPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55C7C40E2C88D51200A78DFF /* HeadwayAudioPlayerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadwayAudioPlayerApp.swift; sourceTree = "<group>"; };
 		55C7C4102C88D51200A78DFF /* AudioPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerView.swift; sourceTree = "<group>"; };
@@ -93,6 +96,23 @@
 			path = BottomSheet;
 			sourceTree = "<group>";
 		};
+		55C450402C8C5C6C002FF65A /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				55C450452C8C5CD7002FF65A /* Info.plist */,
+				55C7C4122C88D51400A78DFF /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		55C4504B2C8C64A6002FF65A /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				55C4504C2C8C64BC002FF65A /* ViewExtensions.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		55C7C4022C88D51200A78DFF = {
 			isa = PBXGroup;
 			children = (
@@ -120,7 +140,8 @@
 				557D25B02C89CF63006367EF /* BottomSheet */,
 				557D25AD2C89CEE9006367EF /* Shape */,
 				557D25AA2C89BD91006367EF /* ButtonStyles */,
-				55C7C4122C88D51400A78DFF /* Assets.xcassets */,
+				55C4504B2C8C64A6002FF65A /* Extensions */,
+				55C450402C8C5C6C002FF65A /* Resources */,
 				55C7C4142C88D51400A78DFF /* Preview Content */,
 			);
 			path = HeadwayAudioPlayer;
@@ -218,6 +239,7 @@
 				557D25AC2C89C8C7006367EF /* PlaybackSpeedView.swift in Sources */,
 				55C7C4112C88D51200A78DFF /* AudioPlayerView.swift in Sources */,
 				55C7C40F2C88D51200A78DFF /* HeadwayAudioPlayerApp.swift in Sources */,
+				55C4504D2C8C64BC002FF65A /* ViewExtensions.swift in Sources */,
 				557D25A92C89BD83006367EF /* SpeedControlButtonStyle.swift in Sources */,
 				557D25A52C89113D006367EF /* BottomSheetView.swift in Sources */,
 				5517E3152C8A52CA008F2599 /* PlayerProgress.swift in Sources */,
@@ -359,6 +381,7 @@
 				DEVELOPMENT_TEAM = 7KFHN9UQ5P;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = HeadwayAudioPlayer/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -389,6 +412,7 @@
 				DEVELOPMENT_TEAM = 7KFHN9UQ5P;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = HeadwayAudioPlayer/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

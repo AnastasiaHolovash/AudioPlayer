@@ -45,7 +45,19 @@ struct PlaybackSpeedView: View {
                 Text(String(format: "%.1fx", playbackSpeed))
                     .font(.title)
                     .fontWeight(.bold)
+                    .kerning(1)
                     .foregroundStyle(.blue)
+                    .frame(width: 65)
+                    .modify { view in
+                        if #available(iOS 16.0, *) {
+                            view
+                                .contentTransition(.numericText())
+                                .animation(.easeIn, value: playbackSpeed)
+                        } else {
+                            view
+                        }
+                    }
+
 
                 Button {
                     if playbackSpeed < 2.0 { playbackSpeed += 0.1 }

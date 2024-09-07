@@ -24,6 +24,8 @@ struct AudioPlayerFeature {
         var playbackSpeed: Float = 1
         var currentSeconds: Float64 = .zero
         var isEditing: Bool = false
+
+        
     }
 
     enum Action: BindableAction {

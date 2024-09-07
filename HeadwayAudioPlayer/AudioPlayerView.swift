@@ -57,13 +57,14 @@ struct AudioPlayerView: View {
 
             VStack(spacing: 16) {
                 Text("Key point \(store.currentKeyPointOrderNumberUIValue) of \(store.summary.keyPoints.count)".uppercased())
-                    .font(.subheadline)
+                    .font(.system(size: 12))
                     .kerning(1)
                     .fontWeight(.semibold)
                     .foregroundColor(.gray)
 
                 if let currentKeyPoint = store.currentKeyPoint {
                     Text(currentKeyPoint.title)
+                        .font(.system(size: 14))
                         .multilineTextAlignment(.center)
                 }
             }
@@ -72,7 +73,7 @@ struct AudioPlayerView: View {
 
     private var playerView: some View {
         VStack(spacing: .zero) {
-            VStack(spacing: 8) {
+            VStack(spacing: 16) {
                 HStack {
                     Text(store.playerState.progress.currentSeconds.formattedTime)
                         .font(.caption)
@@ -98,12 +99,11 @@ struct AudioPlayerView: View {
                     isPresented = true
                 } label: {
                     Text(String(format: "%.1fx speed", store.playbackSpeed))
-                        .font(.subheadline)
+                        .font(.system(size: 10, weight: .bold))
                         .foregroundStyle(Color.black)
-                        .padding(.vertical, 5)
-                        .padding(.horizontal, 15)
+                        .padding(8)
                         .background(Color(.systemGray5))
-                        .cornerRadius(8)
+                        .cornerRadius(4)
                 }
             }
             .padding(.bottom, Constants.largePadding)
