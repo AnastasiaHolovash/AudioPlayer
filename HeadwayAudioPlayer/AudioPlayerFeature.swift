@@ -60,9 +60,8 @@ struct AudioPlayerFeature {
                 }
 
             case .pauseTapped:
-                return .run { _ in
-                    audioPlayerService.pause()
-                }
+                audioPlayerService.pause()
+                return .none
 
             case .seekForwardTapped:
                 let currentSecondsAfterChange = state.currentSeconds + AppConstants.seekForwardSeconds
@@ -114,9 +113,8 @@ struct AudioPlayerFeature {
 
             case let .speedSelected(speed):
                 state.playbackSpeed = speed
-                return .run { _ in
-                    audioPlayerService.setRate(rate: speed)
-                }
+                audioPlayerService.setRate(rate: speed)
+                return .none
 
             case let .setPlayerState(playerState):
                 state.playerState = playerState

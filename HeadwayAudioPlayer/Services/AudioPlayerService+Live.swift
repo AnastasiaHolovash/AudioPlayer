@@ -1,36 +1,11 @@
 //
-//  AudioPlayerService.swift
+//  AudioPlayerService+Live.swift
 //  HeadwayAudioPlayer
 //
-//  Created by Anastasia Holovash on 05.09.2024.
+//  Created by Anastasia Holovash on 07.09.2024.
 //
 
-import Foundation
 import AVFoundation
-import ComposableArchitecture
-
-@DependencyClient
-struct AudioPlayerService {
-    var play: (_ url: URL) -> AsyncStream<PlayerState> = { _ in .never }
-    var pause: () -> Void
-    var resume: () -> Void
-    var setRate: (_ rate: Float) -> Void
-    var seek: (_ time: Float64) async -> Void
-}
-
-extension DependencyValues {
-
-    var audioPlayerService: AudioPlayerService {
-        get { self[AudioPlayerServiceKey.self] }
-        set { self[AudioPlayerServiceKey.self] = newValue }
-    }
-
-    private enum AudioPlayerServiceKey: DependencyKey {
-        static let liveValue: AudioPlayerService = .live()
-        static let testValue = AudioPlayerService()
-    }
-
-}
 
 extension AudioPlayerService {
 
@@ -124,7 +99,6 @@ extension AudioPlayerService {
             }
             newContinuation.onTermination = { [weak self] _ in
                 task.cancel()
-                self?.player.pause()
                 self?.player.replaceCurrentItem(with: nil)
                 self?.player.seek(to: .zero)
                 self?.continuation = nil
@@ -139,8 +113,6 @@ extension AudioPlayerService {
         func pause() {
             player.pause()
         }
-
-//        func stop
 
         func setRate(rate: Float) {
             player.rate = rate
@@ -197,25 +169,11 @@ extension AudioPlayerService {
     }
 }
 
-extension AudioPlayerService {
+private extension AVPlayer {
 
-    enum ControlStatus {
-        case playing
-        case paused
-    }
-
-    struct CurrentItemProgress {
-        let duration: CMTime
-        let time: CMTime
-    }
-
-}
-
-extension AVPlayer {
-
-    nonisolated var periodicTimeUpdates: AsyncStream<AudioPlayerService.CurrentItemProgress> {
+    nonisolated var periodicTimeUpdates: AsyncStream<AudioPlayerService.LiveHelper.CurrentItemProgress> {
         let interval = CMTime(seconds: 0.1, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
-        let (stream, continuation) = AsyncStream<AudioPlayerService.CurrentItemProgress>.makeStream()
+        let (stream, continuation) = AsyncStream<AudioPlayerService.LiveHelper.CurrentItemProgress>.makeStream()
         let progressObserver = addPeriodicTimeObserver(
             forInterval: interval,
             queue: .main
@@ -235,8 +193,8 @@ extension AVPlayer {
         return stream
     }
 
-    nonisolated var statusUpdates: AsyncStream<AudioPlayerService.ControlStatus> {
-        let (stream, continuation) = AsyncStream<AudioPlayerService.ControlStatus>.makeStream()
+    nonisolated var statusUpdates: AsyncStream<AudioPlayerService.LiveHelper.ControlStatus> {
+        let (stream, continuation) = AsyncStream<AudioPlayerService.LiveHelper.ControlStatus>.makeStream()
         let observation = observe(\.timeControlStatus, options: [.new, .old]) { playerItem, change in
             continuation.yield(playerItem.controlStatus)
         }
@@ -275,7 +233,7 @@ private extension AVPlayer {
 
 private extension AVPlayer {
 
-    var controlStatus: AudioPlayerService.ControlStatus {
+    var controlStatus: AudioPlayerService.LiveHelper.ControlStatus {
         switch timeControlStatus {
         case .paused:
             print("Media Paused")
@@ -294,15 +252,29 @@ private extension AVPlayer {
         }
     }
 
-    var currentItemProgress: AudioPlayerService.CurrentItemProgress? {
+    var currentItemProgress: AudioPlayerService.LiveHelper.CurrentItemProgress? {
         guard let currentItem else {
             return nil
         }
 
-        return AudioPlayerService.CurrentItemProgress(
+        return AudioPlayerService.LiveHelper.CurrentItemProgress(
             duration: currentItem.duration,
             time: currentItem.currentTime()
         )
+    }
+
+}
+
+extension AudioPlayerService.LiveHelper {
+
+    enum ControlStatus {
+        case playing
+        case paused
+    }
+
+    struct CurrentItemProgress {
+        let duration: CMTime
+        let time: CMTime
     }
 
 }
