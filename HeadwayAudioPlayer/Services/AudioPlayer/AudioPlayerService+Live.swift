@@ -101,10 +101,10 @@ extension AudioPlayerService {
                     for await value in self.player.statusUpdates {
                         guard let currentItemProgress = self.player.currentItemProgress,
                               let state = self.buildState(
-                                duration: currentItemProgress.duration,
-                                time: currentItemProgress.time,
-                                controlStatus: value
-                            )
+                                  duration: currentItemProgress.duration,
+                                  time: currentItemProgress.time,
+                                  controlStatus: value
+                              )
                         else {
                             continue
                         }
@@ -215,7 +215,7 @@ private extension AVPlayer {
         }
         return stream
     }
-    
+
 }
 
 private extension AVPlayer {

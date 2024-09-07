@@ -10,7 +10,7 @@ import ComposableArchitecture
 
 @ViewAction(for: AudioPlayerFeature.self)
 struct AudioPlayerView: View {
-    
+
     @Perception.Bindable var store: StoreOf<AudioPlayerFeature>
 
     var body: some View {
@@ -21,7 +21,7 @@ struct AudioPlayerView: View {
                 playerView
 
                 Spacer(minLength: .zero)
-                
+
                 textAudioToggleView
             }
             .padding()

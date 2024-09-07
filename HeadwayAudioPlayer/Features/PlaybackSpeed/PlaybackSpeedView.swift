@@ -25,7 +25,7 @@ struct PlaybackSpeedView: View {
             sliderView
 
             speedButtons
-            
+
             continueButton
         }
         .padding(.horizontal)
