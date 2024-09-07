@@ -77,7 +77,6 @@ private struct BottomSheetView<ContentView: View>: View {
                     .zIndex(2)
             }
         }
-        .ignoresSafeArea()
         .onAppear {
             animatedAppear()
         }

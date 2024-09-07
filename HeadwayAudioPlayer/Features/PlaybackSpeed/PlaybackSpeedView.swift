@@ -45,9 +45,11 @@ struct PlaybackSpeedView: View {
         }
         .padding(.horizontal)
         .padding(.top, 24)
-        .padding(.bottom, 48)
-        .background(Color.white)
-        .clipShape(RoundedCorner(radius: 20, corners: [.topLeft, .topRight]) )
+        .background(
+            RoundedCorner(radius: 20, corners: [.topLeft, .topRight])
+                .fill(Color.white)
+                .ignoresSafeArea()
+        )
     }
 
     private var plusMinusControl: some View {
