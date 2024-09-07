@@ -1,5 +1,7 @@
 ## Audio Player
 
+- iOS 15+
+- Xcode 15.4
 
 Player | Playback Speed Picker
 :-------------------------:|:-------------------------:
