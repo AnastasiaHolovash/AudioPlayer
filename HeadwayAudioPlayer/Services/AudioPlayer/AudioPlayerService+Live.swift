@@ -6,6 +6,7 @@
 //
 
 import AVFoundation
+import IssueReporting
 
 extension AudioPlayerService {
 
@@ -28,6 +29,7 @@ extension AudioPlayerService {
         private var player = AVPlayer()
         private var playerItem: AVPlayerItem?
         private var progressObserver: Any?
+        private var currentRate: Float?
         private var continuation: AsyncStream<PlayerState>.Continuation?
 
         func play(url: URL) -> AsyncStream<PlayerState> {
@@ -49,6 +51,9 @@ extension AudioPlayerService {
                 do {
                     try await player.readyToPlay()
                     await player.play()
+                    await MainActor.run {
+                        player.rate = currentRate ?? 1
+                    }
                     await withTaskGroup(of: Void.self) { group in
                         group.addTask {
                             for await value in self.player.periodicTimeUpdates {
@@ -108,6 +113,7 @@ extension AudioPlayerService {
 
         func resume() {
             player.play()
+            player.rate = currentRate ?? 1
         }
 
         func pause() {
@@ -115,6 +121,7 @@ extension AudioPlayerService {
         }
 
         func setRate(rate: Float) {
+            currentRate = rate
             player.rate = rate
         }
 
@@ -135,12 +142,12 @@ extension AudioPlayerService {
             do {
                 try session.setCategory(.playback, options: options)
             } catch {
-                print("Set category error \(error.localizedDescription)")
+                reportIssue(error)
             }
             do {
                 try session.setActive(true, options: [.notifyOthersOnDeactivation])
             } catch {
-                print("Set active error \(error.localizedDescription)")
+                reportIssue(error)
             }
         }
 
@@ -167,6 +174,7 @@ extension AudioPlayerService {
             }
         }
     }
+
 }
 
 private extension AVPlayer {
@@ -188,7 +196,6 @@ private extension AVPlayer {
         }
         continuation.onTermination = { [weak self] _ in
             self?.removeTimeObserver(progressObserver)
-            print("!!! periodicTimeUpdates canceleld")
         }
         return stream
     }
@@ -236,15 +243,12 @@ private extension AVPlayer {
     var controlStatus: AudioPlayerService.LiveHelper.ControlStatus {
         switch timeControlStatus {
         case .paused:
-            print("Media Paused")
             return .paused
 
         case .playing:
-            print("Media Playing")
             return .playing
 
         case .waitingToPlayAtSpecifiedRate:
-            print("Media Waiting to play at specific rate!")
             return .playing
 
         @unknown default:

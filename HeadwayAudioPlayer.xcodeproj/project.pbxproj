@@ -118,10 +118,45 @@
 		55C4504F2C8C6519002FF65A /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				55C450552C8C6BC3002FF65A /* AudioPlayer */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		55C450522C8C6AD1002FF65A /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				55C450542C8C6BB8002FF65A /* AudioPlayer */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		55C450532C8C6B24002FF65A /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				557D25B02C89CF63006367EF /* BottomSheet */,
+				557D25AD2C89CEE9006367EF /* Shape */,
+				557D25AA2C89BD91006367EF /* ButtonStyles */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		55C450542C8C6BB8002FF65A /* AudioPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				5517E30F2C8A4EAD008F2599 /* AudioPlayerFeature.swift */,
+				55C7C4102C88D51200A78DFF /* AudioPlayerView.swift */,
+			);
+			path = AudioPlayer;
+			sourceTree = "<group>";
+		};
+		55C450552C8C6BC3002FF65A /* AudioPlayer */ = {
+			isa = PBXGroup;
+			children = (
 				5517E30A2C8A3EE2008F2599 /* AudioPlayerService.swift */,
 				55C450502C8C65A9002FF65A /* AudioPlayerService+Live.swift */,
 			);
-			path = Services;
+			path = AudioPlayer;
 			sourceTree = "<group>";
 		};
 		55C7C4022C88D51200A78DFF = {
@@ -144,13 +179,10 @@
 			isa = PBXGroup;
 			children = (
 				55C7C40E2C88D51200A78DFF /* HeadwayAudioPlayerApp.swift */,
-				55C7C4102C88D51200A78DFF /* AudioPlayerView.swift */,
-				5517E30F2C8A4EAD008F2599 /* AudioPlayerFeature.swift */,
+				55C450522C8C6AD1002FF65A /* Features */,
 				55C4504F2C8C6519002FF65A /* Services */,
 				5517E3112C8A52B1008F2599 /* Models */,
-				557D25B02C89CF63006367EF /* BottomSheet */,
-				557D25AD2C89CEE9006367EF /* Shape */,
-				557D25AA2C89BD91006367EF /* ButtonStyles */,
+				55C450532C8C6B24002FF65A /* Components */,
 				55C4504B2C8C64A6002FF65A /* Extensions */,
 				55C450402C8C5C6C002FF65A /* Resources */,
 				55C7C4142C88D51400A78DFF /* Preview Content */,
