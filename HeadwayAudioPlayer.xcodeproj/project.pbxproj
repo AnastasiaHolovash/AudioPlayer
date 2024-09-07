@@ -26,7 +26,6 @@
 		55C7C40F2C88D51200A78DFF /* HeadwayAudioPlayerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C7C40E2C88D51200A78DFF /* HeadwayAudioPlayerApp.swift */; };
 		55C7C4112C88D51200A78DFF /* AudioPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C7C4102C88D51200A78DFF /* AudioPlayerView.swift */; };
 		55C7C4132C88D51400A78DFF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55C7C4122C88D51400A78DFF /* Assets.xcassets */; };
-		55C7C4162C88D51400A78DFF /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55C7C4152C88D51400A78DFF /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,7 +49,6 @@
 		55C7C40E2C88D51200A78DFF /* HeadwayAudioPlayerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadwayAudioPlayerApp.swift; sourceTree = "<group>"; };
 		55C7C4102C88D51200A78DFF /* AudioPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerView.swift; sourceTree = "<group>"; };
 		55C7C4122C88D51400A78DFF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		55C7C4152C88D51400A78DFF /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -191,17 +189,8 @@
 				55C450532C8C6B24002FF65A /* Components */,
 				55C4504B2C8C64A6002FF65A /* Extensions */,
 				55C450402C8C5C6C002FF65A /* Resources */,
-				55C7C4142C88D51400A78DFF /* Preview Content */,
 			);
 			path = HeadwayAudioPlayer;
-			sourceTree = "<group>";
-		};
-		55C7C4142C88D51400A78DFF /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				55C7C4152C88D51400A78DFF /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -268,7 +257,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				55C7C4162C88D51400A78DFF /* Preview Assets.xcassets in Resources */,
 				55C7C4132C88D51400A78DFF /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -429,7 +417,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"HeadwayAudioPlayer/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 7KFHN9UQ5P;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -460,7 +448,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"HeadwayAudioPlayer/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 7KFHN9UQ5P;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
