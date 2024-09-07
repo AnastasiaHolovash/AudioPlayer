@@ -98,7 +98,8 @@ extension AudioPlayerService {
                     newContinuation.yield(.idle)
                     newContinuation.finish()
                 } catch {
-                    newContinuation.yield(.failed(error))
+                    reportIssue(error)
+                    newContinuation.yield(.failed)
                     newContinuation.finish()
                 }
             }

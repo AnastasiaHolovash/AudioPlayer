@@ -6,54 +6,29 @@
 //
 
 import Foundation
+import CasePaths
 
+@CasePathable
 enum PlayerState {
     case idle
     case loading
     case playing(PlayerProgress)
     case paused(PlayerProgress)
-    case failed(Error)
+    case failed
 }
 
 extension PlayerState {
 
     var isPlaying: Bool {
-        switch self {
-        case .playing:
-            true
-
-        case .idle,
-             .loading,
-             .paused,
-             .failed:
-            false
-        }
+        self.is(\.playing)
     }
 
     var isPaused: Bool {
-        switch self {
-        case .paused:
-            true
-
-        case .idle,
-             .loading,
-             .playing,
-             .failed:
-            false
-        }
+        self.is(\.paused)
     }
 
     var isLoading: Bool {
-        switch self {
-        case .loading:
-            true
-
-        case .idle,
-             .playing,
-             .paused,
-             .failed:
-            false
-        }
+        self.is(\.loading)
     }
 
     var progress: PlayerProgress {
@@ -73,16 +48,7 @@ extension PlayerState {
     }
 
     var hasProgress: Bool {
-        switch self {
-        case .playing,
-             .paused:
-            true
-
-        case .idle,
-             .loading,
-             .failed:
-            false
-        }
+        isPlaying || isPaused
     }
     
 }

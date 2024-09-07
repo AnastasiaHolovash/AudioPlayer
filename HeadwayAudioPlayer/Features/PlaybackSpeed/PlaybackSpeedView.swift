@@ -18,48 +18,36 @@ struct PlaybackSpeedView: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            HStack {
-                Text("Playback speed")
-                    .font(.headline)
-
-                Spacer(minLength: .zero)
-            }
+            titleView
 
             plusMinusControl
 
             sliderView
 
             speedButtons
-
-            Button {
-                bottomSheetDismiss()
-            } label: {
-                Text("Continue")
-                    .foregroundColor(.white)
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.playerBlue)
-                    .cornerRadius(10)
-            }
+            
+            continueButton
         }
         .padding(.horizontal)
         .padding(.top, 24)
-        .background(
-            RoundedCorner(radius: 20, corners: [.topLeft, .topRight])
-                .fill(Color.white)
-                .ignoresSafeArea()
-        )
+        .padding(.bottom, 20)
+    }
+
+    private var titleView: some View {
+        Text("Playback speed")
+            .font(.headline)
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private var plusMinusControl: some View {
         HStack(spacing: 20) {
             Button {
-                if playbackSpeed > 0.5 { playbackSpeed -= 0.1 }
+                playbackSpeed -= 0.1
             } label: {
                 Image(systemName: "minus")
                     .font(.system(size: 18))
             }
+            .opacity(playbackSpeed > 0.5 ? 1 : 0)
             .buttonStyle(SpeedControlButtonStyle())
             .frame(width: 48, height: 48)
 
@@ -73,22 +61,22 @@ struct PlaybackSpeedView: View {
                     if #available(iOS 16.0, *) {
                         view
                             .contentTransition(.numericText())
-                            .animation(.easeIn, value: playbackSpeed)
                     } else {
                         view
                     }
                 }
 
-
             Button {
-                if playbackSpeed < 2.0 { playbackSpeed += 0.1 }
+                playbackSpeed += 0.1
             } label: {
                 Image(systemName: "plus")
                     .font(.system(size: 18))
             }
+            .opacity(playbackSpeed < 2 ? 1 : 0)
             .buttonStyle(SpeedControlButtonStyle())
             .frame(width: 48, height: 48)
         }
+        .animation(.default, value: playbackSpeed)
         .padding(.vertical, 20)
     }
 
@@ -114,6 +102,20 @@ struct PlaybackSpeedView: View {
             SpeedButton(label: "Normal", speed: 1.0, playbackSpeed: $playbackSpeed)
             SpeedButton(label: "1.2x", speed: 1.2, playbackSpeed: $playbackSpeed)
             SpeedButton(label: "1.5x", speed: 1.5, playbackSpeed: $playbackSpeed)
+        }
+    }
+
+    private var continueButton: some View {
+        Button {
+            bottomSheetDismiss()
+        } label: {
+            Text("Continue")
+                .foregroundColor(.white)
+                .font(.headline)
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Color.playerBlue)
+                .cornerRadius(10)
         }
     }
 

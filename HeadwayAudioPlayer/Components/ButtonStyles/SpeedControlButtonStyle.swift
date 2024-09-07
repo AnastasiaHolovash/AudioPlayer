@@ -12,10 +12,10 @@ struct SpeedControlButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         ZStack {
             RoundedRectangle(cornerRadius: 8)
-                .foregroundColor(Color.gray.opacity(0.2))
+                .foregroundStyle(Color.playerLightGray)
 
             configuration.label
-                .foregroundColor(.black)
+                .foregroundStyle(.black)
         }
     }
 

@@ -12,7 +12,6 @@ import Foundation
 struct AudioPlayerFeature {
 
     @CasePathable
-    @dynamicMemberLookup
     enum Destination {
         case playbackSpeed
     }
@@ -24,7 +23,7 @@ struct AudioPlayerFeature {
         var playerState: PlayerState = .idle
         var playbackSpeed: Float = 1
         var currentSeconds: Double = .zero
-        var isEditing: Bool = false
+        var isCurrentSecondsEditing: Bool = false
         var destination: Destination?
     }
 
@@ -37,7 +36,7 @@ struct AudioPlayerFeature {
             case nextKeyPointTapped
             case previousKeyPointTapped
             case playbackSpeedTapped
-            case setIsEditing(Bool)
+            case setCurrentSecondsIsEditing(Bool)
             case binding(BindingAction<State>)
         }
 
@@ -118,21 +117,20 @@ private extension AudioPlayerFeature {
             state.destination = .playbackSpeed
             return .none
 
-        case let .setIsEditing(isEditing):
+        case let .setCurrentSecondsIsEditing(isEditing):
             if !isEditing {
                 return .run { [currentSeconds = state.currentSeconds] send in
                     await audioPlayerService.seek(time: currentSeconds)
                     await send(.local(.seekEnded))
                 }
             } else {
-                state.isEditing = isEditing
+                state.isCurrentSecondsEditing = isEditing
                 return .none
             }
 
         case .binding(\.playbackSpeed):
             audioPlayerService.setRate(rate: state.playbackSpeed)
             return .none
-
 
         case .binding:
             return .none
@@ -143,13 +141,13 @@ private extension AudioPlayerFeature {
         switch action {
         case let .setPlayerState(playerState):
             state.playerState = playerState
-            if !state.isEditing {
+            if !state.isCurrentSecondsEditing {
                 state.currentSeconds = playerState.progress.currentSeconds
             }
             return .none
 
         case .seekEnded:
-            state.isEditing = false
+            state.isCurrentSecondsEditing = false
             return .none
         }
     }
@@ -192,4 +190,5 @@ private extension AudioPlayerFeature {
         static let seekForwardSeconds: Double = 10
         static let seekBackwardSeconds: Double = 5
     }
+
 }

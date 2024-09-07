@@ -9,9 +9,6 @@ import Foundation
 import IdentifiedCollections
 
 struct Summary {
-    let imageURL: URL?
-    let keyPoints: IdentifiedArrayOf<KeyPoint>
-
     struct KeyPoint: Identifiable {
         let orderNumber: Int
         let title: String
@@ -21,6 +18,9 @@ struct Summary {
             orderNumber
         }
     }
+
+    let imageURL: URL?
+    let keyPoints: IdentifiedArrayOf<KeyPoint>
 }
 
 extension Summary {
@@ -35,7 +35,8 @@ extension Summary {
 
     func keyPointID(nextTo id: Int) -> Int? {
         guard let index = keyPoints.index(id: id),
-              index < lastKeyPointOrderNumber else {
+              index < keyPoints.endIndex
+        else {
             return nil
         }
 
@@ -44,7 +45,8 @@ extension Summary {
 
     func keyPointID(previousTo id: Int) -> Int? {
         guard let index = keyPoints.index(id: id),
-              index > .zero else {
+              index > keyPoints.startIndex
+        else {
             return nil
         }
 

@@ -47,7 +47,9 @@ extension EnvironmentValues {
     }
 
     private struct BottomSheetDismissKey: EnvironmentKey {
-        static let defaultValue = BottomSheetDismiss { reportIssue("Can't dismiss bottom sheet") }
+        static let defaultValue = BottomSheetDismiss {
+            reportIssue("Can't dismiss bottom sheet")
+        }
     }
 
 }
@@ -84,25 +86,15 @@ private struct BottomSheetView<ContentView: View>: View {
 
     private var mainView: some View {
         contentView
+            .background(
+                RoundedCorner(radius: 20, corners: [.topLeft, .topRight])
+                    .fill(Color.white)
+                    .ignoresSafeArea()
+            )
             .environment(\.bottomSheetDismiss, BottomSheetDismiss(dismiss: animatedDisappear))
             .transition(.move(edge: .bottom))
             .offset(y: dragOffset)
-            .gesture(DragGesture()
-                .onChanged { value in
-                    if value.translation.height > 0 {
-                        dragOffset = value.translation.height
-                    }
-                }
-                .onEnded { value in
-                    if value.translation.height > 50 {
-                        animatedDisappear()
-                    } else {
-                        withAnimation {
-                            dragOffset = 0
-                        }
-                    }
-                }
-            )
+            .gesture(dragGesture)
             .onDisappear {
                 isPresented = false
             }
@@ -116,6 +108,24 @@ private struct BottomSheetView<ContentView: View>: View {
             }
             .transition(.opacity)
             .ignoresSafeArea()
+    }
+
+    private var dragGesture: some Gesture {
+        DragGesture()
+            .onChanged { value in
+                if value.translation.height > 0 {
+                    dragOffset = value.translation.height
+                }
+            }
+            .onEnded { value in
+                if value.translation.height > 50 {
+                    animatedDisappear()
+                } else {
+                    withAnimation {
+                        dragOffset = 0
+                    }
+                }
+            }
     }
 
     private func animatedAppear() {

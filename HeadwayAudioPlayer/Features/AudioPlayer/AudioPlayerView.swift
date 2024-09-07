@@ -49,11 +49,14 @@ struct AudioPlayerView: View {
             }
 
             VStack(spacing: Constants.padding) {
-                Text("Key point \(store.currentKeyPointOrderNumberUIValue) of \(store.summary.keyPoints.count)".uppercased())
-                    .font(.system(size: 12))
-                    .kerning(1)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.gray)
+                Text(
+                    "Key point \(store.currentKeyPointOrderNumberUIValue) of \(store.summary.keyPoints.count)"
+                        .uppercased()
+                )
+                .font(.system(size: 12))
+                .kerning(1)
+                .fontWeight(.semibold)
+                .foregroundColor(.gray)
 
                 if let currentKeyPoint = store.currentKeyPoint {
                     Text(currentKeyPoint.title)
@@ -76,7 +79,7 @@ struct AudioPlayerView: View {
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(Color.black)
                         .padding(Constants.smallPadding)
-                        .background(Color.lightGray)
+                        .background(Color.playerLightGray)
                         .cornerRadius(4)
                 }
             }
@@ -98,7 +101,7 @@ struct AudioPlayerView: View {
                 value: $store.currentSeconds,
                 in: 0...store.playerState.progress.totalSeconds
             ) { isEditing in
-                send(.setIsEditing(isEditing))
+                send(.setCurrentSecondsIsEditing(isEditing))
             }
             .tint(.playerBlue)
             .animation(.easeIn, value: store.currentSeconds)
@@ -119,7 +122,7 @@ struct AudioPlayerView: View {
                 Image(systemName: "backward.end")
                     .font(.system(size: 26, weight: .medium))
             }
-            .disabled(store.currentKeyPointOrderNumber == .zero)
+            .disabled(store.currentKeyPointOrderNumber == store.summary.firstKeyPointOrderNumber)
 
             Button {
                 send(.seekBackwardTapped)
@@ -156,7 +159,7 @@ struct AudioPlayerView: View {
         }
         .buttonStyle(PlayerButtonStyle())
         .foregroundColor(.primary)
-        .allowsTightening(!store.playerState.isLoading)
+        .allowsHitTesting(!store.playerState.isLoading)
     }
 
     private var textAudioToggleView: some View {
@@ -211,11 +214,14 @@ private extension AudioPlayerView {
 
 #Preview {
 
-    AudioPlayerView(store: Store(
-        initialState: AudioPlayerFeature.State(currentKeyPointID: Summary.zeroToOne.keyPoints.first!.id),
-        reducer: {
+    AudioPlayerView(
+        store: Store(
+            initialState: AudioPlayerFeature.State(
+                currentKeyPointID: Summary.zeroToOne.keyPoints.first!.id
+            )
+        ) {
             AudioPlayerFeature()
         }
-    ))
+    )
 
 }

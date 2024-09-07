@@ -11,14 +11,16 @@ import ComposableArchitecture
 @main
 struct HeadwayAudioPlayerApp: App {
 
+    static let store = Store(
+        initialState: AudioPlayerFeature.State(currentKeyPointID: Summary.zeroToOne.keyPoints.first!.id),
+        reducer: {
+            AudioPlayerFeature()
+        }
+    )
+
     var body: some Scene {
         WindowGroup {
-            AudioPlayerView(store: Store(
-                initialState: AudioPlayerFeature.State(currentKeyPointID: Summary.zeroToOne.keyPoints.first!.id),
-                reducer: {
-                    AudioPlayerFeature()
-                }
-            ))
+            AudioPlayerView(store: HeadwayAudioPlayerApp.store)
         }
     }
 
